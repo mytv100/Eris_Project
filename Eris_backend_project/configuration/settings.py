@@ -48,7 +48,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # rest 관련 모듈
+
+    'rest_framework',
+    'drf_yasg',
+
+    # 너가 만든 모듈
+    'product_recommendation',
+
 ]
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        }
+    },
+
+}
+
+REDOC_SETTINGS = {
+    'LAZY_RENDERING': False,
+
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
