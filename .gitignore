@@ -1,2 +1,9 @@
 .idea
 
+/Eris-frontend-project/node_modules/*
+/Eris_backend_project/venv/*
+
+
+
+Eris_backend_project/product_recommendation/__pycache__/
+Eris_backend_project/product_recommendation/migrations/__pycache__/
