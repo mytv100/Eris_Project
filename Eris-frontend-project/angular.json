@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Eris-frontend-project": {
+    "angluar-init-project": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/Eris-frontend-project",
+            "outputPath": "dist/angluar-init-project",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -23,9 +23,16 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css",
+              "src/assets/sass/paper-kit.scss",
+              "src/assets/sass/demo.scss",
+              "node_modules/font-awesome/css/font-awesome.css",
+              "src/assets/css/nucleo-icons.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/rellax/rellax.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -57,18 +64,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "Eris-frontend-project:build"
+            "browserTarget": "angluar-init-project:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "Eris-frontend-project:build:production"
+              "browserTarget": "angluar-init-project:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Eris-frontend-project:build"
+            "browserTarget": "angluar-init-project:build"
           }
         },
         "test": {
@@ -102,7 +109,7 @@
         }
       }
     },
-    "Eris-frontend-project-e2e": {
+    "angluar-init-project-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -111,11 +118,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "Eris-frontend-project:serve"
+            "devServerTarget": "angluar-init-project:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "Eris-frontend-project:serve:production"
+              "devServerTarget": "angluar-init-project:serve:production"
             }
           }
         },
@@ -131,5 +138,16 @@
       }
     }
   },
-  "defaultProject": "Eris-frontend-project"
+  "defaultProject": "angluar-init-project",
+  "schematics": {
+    "@schematics/angular:component": {
+      "inlineTemplate": false,
+      "spec": true,
+      "prefix": "app",
+      "styleext": "scss"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
 }
