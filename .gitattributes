@@ -7,9 +7,10 @@
 *.py3 		text diff=python
 *.pyw 		text diff=python
 *.pyx  		text diff=python
+*.css           text
 
-*.css linguist-vendored=false
-*.scss linguist-vendored=false
+# *.css linguist-vendored=false
+# *.scss linguist-vendored=false
 
 # Binary files
 # ============
