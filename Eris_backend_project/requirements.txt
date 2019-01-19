@@ -7,6 +7,7 @@ coreschema==0.0.4
 Django==2.1.5
 django-admin==1.3.2
 django-excel-response2==2.0.8
+django-extensions==2.1.4
 django-filter==2.0.0
 django-registration==3.0
 django-six==1.0.4
@@ -14,6 +15,7 @@ django-swagger-ui==0.1.9
 djangorestframework==3.9.0
 drf-yasg==1.11.0
 flex==6.13.2
+graphviz==0.10.1
 idna==2.7
 inflection==0.3.1
 itypes==1.1.0
@@ -25,8 +27,9 @@ MarkupSafe==1.1.0
 openapi==1.1.0
 openapi-codec==1.3.2
 psycopg2-binary==2.7.5
-pydot==1.2.4
-pyparsing==2.2.0
+pydot==1.4.1
+pygraphviz==1.5
+pyparsing==2.3.1
 pytz==2018.7
 PyYAML==3.13
 requests==2.20.1

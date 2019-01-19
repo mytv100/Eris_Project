@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
 
+    'django_extensions',
+
     # 너가 만든 모듈
     'product_recommendation',
 
@@ -66,6 +68,11 @@ SWAGGER_SETTINGS = {
         }
     },
 
+}
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
 }
 
 REDOC_SETTINGS = {
