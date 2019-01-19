@@ -20,3 +20,7 @@ class Asdf(models.Model):
 
 class SDf(models):
     asdfsdf = models.TextField(max_length=300)
+
+
+class df(models):
+    aaa = models.TextField(max_length=100)
