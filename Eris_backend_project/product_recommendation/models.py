@@ -16,4 +16,4 @@ class Asdf(models.Model):
         null=False,
         default='비어있음'
     )
-
+ 
