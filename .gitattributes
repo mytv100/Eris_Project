@@ -8,7 +8,7 @@
 *.pyw 		text diff=python
 *.pyx  		text diff=python
 *.css -text
-
+*.scss -text
 # Binary files
 # ============
 *.db		binary
