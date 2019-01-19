@@ -24,3 +24,4 @@ class SDf(models):
 
 class df(models):
     aaa = models.TextField(max_length=100)
+    bbb = models.DateField()
