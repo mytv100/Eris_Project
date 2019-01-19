@@ -7,6 +7,7 @@
 *.py3 		text diff=python
 *.pyw 		text diff=python
 *.pyx  		text diff=python
+*.css -text
 
 # Binary files
 # ============
