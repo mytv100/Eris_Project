@@ -17,6 +17,3 @@ class Asdf(models.Model):
         default='비어있음'
     )
 
-
-class SDf(models):
-    asdfsdf = models.TextField(max_length=300)
