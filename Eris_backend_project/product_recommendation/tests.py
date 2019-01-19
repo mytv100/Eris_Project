@@ -4,7 +4,6 @@ from http import HTTPStatus
 from django.test import TestCase
 
 from product_recommendation.models import Asdf
-from rest_framework.response import Response
 
 
 class Testasdf(TestCase):
