@@ -6,8 +6,7 @@
 * 여기는 프로젝트 기획 관련 개략적 내용 관련 Readme 
 * 백 프론트의 기술적 이슈는 하위 프로젝트의 Readme.md에 작성할 것 
 * 너 프로젝트니까 이런 구성은 너가 자유롭게 지우고 쓰고 주도적으로 할 것
-* i want to write korean, but i can't 
-* as soon as possible i will fix it 
+* 됬다 드디어 한글이 된다. 우분투 검색창에는 안되지만 나머지가 되고 저긴 한글이 필요없으니까 패스
 
 # Backend (Django)
 ##  DRF API Document 적용됨 
