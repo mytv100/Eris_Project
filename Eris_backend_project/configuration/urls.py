@@ -22,11 +22,11 @@ from rest_framework import permissions
 schema_view = get_schema_view(
     openapi.Info(
         title="불화의 여신 Eris와 함께하는 신나는 졸업작품 프로젝트",
-        default_version='version Alpha 0.0.1 버전은 자유롭게 작성되는 문자열',
-        description="여기는 문서 상세 설명 넣는 부분 ",
+        default_version='version Alpha 0.0.1',
+        description="문서 상세 설명", #문서 상세 설명이라는게 이 프로젝트에 대한? 이 urls.py에 대한?
         terms_of_service="https://github.com/mytv100/Eris_Project",
-        # 여기 너 이메일 적으셈  이메일 형식 안맞으면 internal error 떠서 내꺼 넣어놓음
-        contact=openapi.Contact(email="KimSoungRyoul@gmail.com"),
+        # 이메일 형식 안맞으면 internal error 발생함
+        contact=openapi.Contact(email="mytv7609@gmail.com"),
         license=openapi.License(name="NO Licence!!!!"),
     ),
     validators=['flex', 'ssv'],
