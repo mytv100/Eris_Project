@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
+# github에 SECRET_KEY가 올라가는 것을 방
 secret_file = os.path.join(BASE_DIR, 'configuration/secrets.json')
 
 with open(secret_file) as f:
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
 
 ]
 
+# 문서화
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
         'basic': {
@@ -70,11 +72,13 @@ SWAGGER_SETTINGS = {
 
 }
 
+# model을 graph 이미지로 나타내
 GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
 }
 
+# 문서화
 REDOC_SETTINGS = {
     'LAZY_RENDERING': False,
 
@@ -173,4 +177,17 @@ LOGGING = {
             'level': 'DEBUG',
         },
     }
+}
+
+REST_FRAMEWORK = {
+    # global settings for a REST framework API
+
+    # (ex)
+
+    # 'DEFAULT_PERMISSIOn_CLASSES' : [
+    #   'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    # ]
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
 }
