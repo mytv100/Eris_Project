@@ -5,6 +5,8 @@
 
 Eris는 업체명_고객ID(nickname) 형식으로 database에 고객 data 저장
 
+(업체명을 넣는 이유는 사이트별 추천을 해주기 위해서)
+
 (보유중인 영화 리스트는 어떻게 처리하지?)
 
 imdb에서 movie data를 가져와서 database에 저장,
