@@ -1,10 +1,10 @@
 # Create your views here.
 from typing import Any
-from urllib.request import Request
 
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework import viewsets
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -26,14 +26,19 @@ class MovieAPIViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
+    # overriding
     def create(self, request: Request, *args: Any, **kwargs: Any):
-        request.data['movie_owner']= [2, ]
+        # 로그인한 사용자의 id값을 넣어줌
+        request.data['movie_owner']= [request.user.id, ]
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+        serializer.data.pop('movie_owner')
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # def create(self, request: Request, *args: Any, **kwargs: Any):
-    #     moive_owenr = request.user
-    # http request create =  && 5개 있음 이런거
+        # Response에서 'movie_owner' 값 제거하기위해서
+        data = serializer.data
+        del data["movie_owner"]
+
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+

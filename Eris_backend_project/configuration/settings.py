@@ -62,20 +62,32 @@ INSTALLED_APPS = [
 
 ]
 
-# 문서화
-SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'basic': {
-            'type': 'basic'
-        }
-    },
+ROOT_URLCONF = 'configuration.urls'
 
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',)
 }
 
-# model을 graph 이미지로 나타내
+# drf-yasg
+SWAGGER_SETTINGS = {
+    # 'PERSIST_AUTH': True,
+    # 'REFETCH_SCHEMA_WITH_AUTH': True,
+    # 'REFETCH_SCHEMA_ON_LOGOUT': True,
+
+    'DEFAULT_INFO': 'configuration.urls.swagger_info',
+}
+
+# model을 graph 이미지로 나타내줌
 GRAPH_MODELS = {
-  'all_applications': True,
-  'group_models': True,
+    'all_applications': True,
+    'group_models': True,
 }
 
 # 문서화
@@ -94,7 +106,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'configuration.urls'
 
 TEMPLATES = [
     {
@@ -161,7 +172,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -177,17 +187,4 @@ LOGGING = {
             'level': 'DEBUG',
         },
     }
-}
-
-REST_FRAMEWORK = {
-    # global settings for a REST framework API
-
-    # (ex)
-
-    # 'DEFAULT_PERMISSIOn_CLASSES' : [
-    #   'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    # ]
-
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
 }
