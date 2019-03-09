@@ -1,10 +1,19 @@
+from typing import Any
+
 from rest_framework import serializers
 
-from product_recommendation.models import Asdf
+from product_recommendation.models import Movie
 
 
-# django restframework  drf 방식의 직렬화 객체임 참고하셈
-class AsdfSerializer(serializers.ModelSerializer):
+class MovieSerializer(serializers.ModelSerializer):
+    #movie_owner = serializers.IntegerField(help_text='업체의 PK', read_only=True)
+
+    # def create(self, validated_data):
+    #     self.validated_data['movie_owner'][0]
+    #     return Movie()
+
     class Meta:
-        model = Asdf
-        fields = ['aaa', 'bbb']
+        model = Movie
+        fields = "__all__"
+        #exclude = ('movie_owner',)
+        # example 주는 것 찾아보기
