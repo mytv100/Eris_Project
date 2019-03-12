@@ -27,7 +27,7 @@ class MovieAPIViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
-        request.data['movie_owner']= [request.user.id, ] # user.id 찾아야함
+        request.data['movie_owner']= [2, ]
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
