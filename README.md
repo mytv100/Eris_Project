@@ -7,8 +7,10 @@ Eris_Project
 ![default](https://user-images.githubusercontent.com/24240623/50373853-00990e80-0628-11e9-810e-957a643cba61.PNG)
 
 # Overview of  this project
-* 이 프로젝트의 목적은 추천 시스템을 Open API로 구현하는 것
+* 이 프로젝트의 목적은 영화 추천 시스템을 Open API로 구현하는 것
 * Restful API를 만들기 위해서 Django REST framework를 사용
+* drf-yasg를 사용해서 swagger 문서 적용
+
 ##
 * 추천 시스템은 온라인상의 마케팅으로서 중요한 기능 
 * 추천 알고리즘은 크게 content-based filtering과 collaborative filtering으로 나뉨
@@ -35,6 +37,8 @@ Eris_Project
 |:--        |:--                          |
 |Eris_frontend_project       |Frontend 프로젝트 디렉토리|
 |Eris_backend_project       |Backend 프로젝트 디렉토리    |
+|TIL(Today_I_Learned)       |공부한 내용 정리    |
+|plan       |이 프로젝트의 진행 방향 정리    |
 |.gitattributes        |github가 프로젝트 안의 language를 카운팅하는지에 대한 목록                          |
 |.gitignore       |github에 올리지 않는 목록    |
 |LICENSE     |라이센스  |
