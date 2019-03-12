@@ -29,28 +29,30 @@ class Movie(models.Model):
         null=False,
     )
 
-    rate: float = models.DecimalField(
-        help_text="평점",
-        default=0,
-        decimal_places=2,
-        max_digits=5,
-    )
+    # rate: float = models.DecimalField(
+    #     help_text="평점",
+    #     default=0,
+    #     decimal_places=2,
+    #     max_digits=5,
+    # )
 
+    rate: float = models.FloatField(
+        null=False,
+        default=None,
+    )
     running_time: int = models.IntegerField(
         help_text="영화 시간, 분을 기준으로",
         default=0,
     )
 
-    created_at: datetime = CreationDateTimeField(
-
-    )
+    created_at: datetime = CreationDateTimeField()
 
     director: str = models.CharField(
         max_length=64,
         null=False,
     )
 
-    movie_owner = models.ManyToManyField(BusinessPartner)
+    movie_owner: BusinessPartner = models.ManyToManyField(BusinessPartner)
 
 
 class Actor(models.Model):
@@ -59,7 +61,9 @@ class Actor(models.Model):
         null=False,
     )
 
-    movies = models.ManyToManyField(Movie)
+    created_at: datetime = CreationDateTimeField(auto_now_add=True)
+
+    movies: Movie = models.ManyToManyField(Movie)
 
 
 class Customer(models.Model):
@@ -83,3 +87,27 @@ class Customer(models.Model):
         to=BusinessPartner,
         on_delete=models.CASCADE
     )
+
+    movies: Movie = models.ManyToManyField(
+        Movie,
+        through='PersonalMovie',
+        through_fields=('customer', 'movie'),
+    )
+
+    created_at: datetime = CreationDateTimeField()
+
+
+class PersonalMovie(models.Model):
+    customer: Customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE
+    )
+
+    movie: Movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE
+    )
+
+    rate: float = models.FloatField(null=False, default=None)
+
+    created_at: datetime = CreationDateTimeField()
