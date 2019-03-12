@@ -2,7 +2,7 @@ from typing import Any
 
 from rest_framework import serializers
 
-from product_recommendation.models import Movie
+from movie_recommendation.models import Movie
 
 
 # 영화가 이미 데이터베이스에 존재하는지 확인해서

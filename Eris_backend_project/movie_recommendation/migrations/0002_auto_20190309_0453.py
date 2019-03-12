@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('auth', '0009_alter_user_last_name_max_length'),
-        ('product_recommendation', '0001_initial'),
+        ('movie_recommendation', '0001_initial'),
     ]
 
     operations = [
@@ -59,16 +59,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='movie',
             name='movie_owner',
-            field=models.ManyToManyField(to='product_recommendation.BusinessPartner'),
+            field=models.ManyToManyField(to='movie_recommendation.BusinessPartner'),
         ),
         migrations.AddField(
             model_name='customer',
             name='associated_bp',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='product_recommendation.BusinessPartner'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movie_recommendation.BusinessPartner'),
         ),
         migrations.AddField(
             model_name='actor',
             name='movies',
-            field=models.ManyToManyField(to='product_recommendation.Movie'),
+            field=models.ManyToManyField(to='movie_recommendation.Movie'),
         ),
     ]

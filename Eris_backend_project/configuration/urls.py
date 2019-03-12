@@ -43,7 +43,7 @@ urlpatterns = [
     path('api/doc/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui', ),
     path('api/doc/redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-    path('product-recommend/', include('product_recommendation.urls'), name='product-recommend-app'),
+    path('product-recommend/', include('movie_recommendation.urls'), name='product-recommend-app'),
     #rest_framework Authentication
     path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 

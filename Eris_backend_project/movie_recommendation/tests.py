@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 from django.test import TestCase
 
-from product_recommendation.models import Asdf
+from movie_recommendation.models import Asdf
 
 
 class Testasdf(TestCase):
