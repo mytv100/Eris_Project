@@ -26,3 +26,9 @@ imdb에서 movie data를 가져와서 database에 저장,
 5. make url in api form
 6. develop filtering algorithm : colaborative or content-based
 7. make documents
+
+---
+**progress**
+
+i can insert movie data into movie DB using API,
+but i can't insert movie - movie_owner data int movie_movie_owner DB
