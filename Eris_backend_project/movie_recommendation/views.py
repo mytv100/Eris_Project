@@ -47,6 +47,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
+        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
         for query in self.queryset.filter(businessPartner=request.user):
             if request.data['movie']['title'] == query.movie.title:
                 headers = self.get_success_headers(None)
@@ -70,6 +71,7 @@ class CustomerAPIViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
+        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
         for query in self.queryset:
             if request.user.username + "-" + request.data["nickname"] == query.nickname:
                 headers = self.get_success_headers(None)
@@ -98,6 +100,7 @@ class ActorMovieAPIViewSet(viewsets.ModelViewSet):
 
     # overriding
     def create(self, request: Request, *args: Any, **kwargs: Any):
+        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
         for query in self.queryset:
             if request.data['movie']['title'] == query.movie.title:
                 headers = self.get_success_headers(None)
@@ -123,6 +126,7 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
 
     # overriding
     def create(self, request: Request, *args: Any, **kwargs: Any):
+        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
         for query in self.queryset:
             if request.user.username + "-" + request.data['customer']["nickname"] == query.customer.nickname:
                 for m in Movie.objects.filter(title=request.data['movie']['title']):
