@@ -13,7 +13,7 @@ Router : 각 viewset에 대한 접근을 제공할 URLs를 정의한다.
 
 ---
 #### 실행 순서
- 1. API로 request이 들어옴 (http://ip:port/appName/modelName 형식으로)
+ 1. API로 request가 들어옴 (http://ip:port/appName/modelName 형식으로)
  2. Project의 urls.py -> App의 urls.py -> Router -> views.py ->ViewSet
  3. ViewSet에서 Serializer 호출해서 형태를 만들어줌
  4. response 를 반환해줌
