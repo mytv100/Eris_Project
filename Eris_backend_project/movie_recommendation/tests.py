@@ -3,25 +3,25 @@ from http import HTTPStatus
 
 from django.test import TestCase
 
-from movie_recommendation.models import Asdf
+from movie_recommendation.models import Movie
 
 
-class Testasdf(TestCase):
+class TestMovie(TestCase):
 
-    def test_asdf(self):
-        asdf = Asdf.objects.create(aaa='필드 데이터1', bbb='필드 데이터2')
+    def test_movie(self):
+        movie = Movie.objects.create(aaa='필드 데이터1', bbb='필드 데이터2')
 
         response = self.client.get(
-            path='/product-recommend/asdf/'
+            path='/movie-recommend/movie/'
         )
 
         print(response.data)
-        self.assertEqual(response.data[0]['aaa'], asdf.aaa)
-        self.assertEqual(response.data[0]['bbb'], asdf.bbb)
+        self.assertEqual(response.data[0]['aaa'], movie.aaa)
+        self.assertEqual(response.data[0]['bbb'], movie.bbb)
 
     def test_POST_request(self):
         response = self.client.post(
-            path='/product-recommend/asdf/',
+            path='/movie-recommend/movie/',
             data={
                 "aaa": "string",
                 "bbb": "string"
@@ -29,4 +29,4 @@ class Testasdf(TestCase):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.CREATED)
-        self.assertTrue(Asdf.objects.exists())
+        self.assertTrue(Movie.objects.exists())
