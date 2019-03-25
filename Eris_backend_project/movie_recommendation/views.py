@@ -124,7 +124,6 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
     queryset = CustomerMovie.objects.all()
     serializer_class = CustomerMovieSerializer
 
-    # overriding
     def create(self, request: Request, *args: Any, **kwargs: Any):
         # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
         for query in self.queryset:
