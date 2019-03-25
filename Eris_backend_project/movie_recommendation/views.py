@@ -47,13 +47,13 @@ class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
-        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
+        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset.filter(businessPartner=request.user):
             if request.data['movie']['title'] == query.movie.title:
                 headers = self.get_success_headers(None)
                 # 202 말고 다른 error 필요함 뭔지 잘 모르겠음
                 # 중복된 거 있으면 안받아줌
-                return Response(None, status=status.HTTP_202_ACCEPTED, headers=headers)
+                return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -61,7 +61,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
         serializer.validated_data["businesspartner"] = {"username": request.user.username}
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
 
 class CustomerAPIViewSet(viewsets.ModelViewSet):
@@ -71,13 +71,13 @@ class CustomerAPIViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
-        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
+        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset:
             if request.user.username + "-" + request.data["nickname"] == query.nickname:
                 headers = self.get_success_headers(None)
                 # 202 말고 다른 error 필요함 뭔지 잘 모르겠음
                 # 중복된 거 있으면 안받아줌
-                return Response(None, status=status.HTTP_202_ACCEPTED, headers=headers)
+                return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
         request.data["nickname"] = request.user.username + "-" + request.data["nickname"]
         serializer = self.get_serializer(data=request.data)
@@ -100,13 +100,13 @@ class ActorMovieAPIViewSet(viewsets.ModelViewSet):
 
     # overriding
     def create(self, request: Request, *args: Any, **kwargs: Any):
-        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
+        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset:
             if request.data['movie']['title'] == query.movie.title:
                 headers = self.get_success_headers(None)
                 # 202 말고 다른 error 필요함 뭔지 잘 모르겠음
                 # 중복된 거 있으면 안받아줌
-                return Response(None, status=status.HTTP_202_ACCEPTED, headers=headers)
+                return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -125,7 +125,7 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerMovieSerializer
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
-        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 202 반환
+        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset:
             if request.user.username + "-" + request.data['customer']["nickname"] == query.customer.nickname:
                 for m in Movie.objects.filter(title=request.data['movie']['title']):
@@ -133,7 +133,7 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
                         headers = self.get_success_headers(None)
                         # 202 말고 다른 error 필요함 뭔지 잘 모르겠음
                         # 중복된 거 있으면 안받아줌
-                        return Response(None, status=status.HTTP_202_ACCEPTED, headers=headers)
+                        return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
         # customer nickname 으로 구분할 수 있도록 Businesspartner.name-Customer.nickname 으로 구성
         request.data['customer']["nickname"] = request.user.username + "-" + request.data['customer']["nickname"]
         serializer = self.get_serializer(data=request.data)
