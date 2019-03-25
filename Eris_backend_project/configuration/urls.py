@@ -23,29 +23,37 @@ schema_view = get_schema_view(
     openapi.Info(
         title="졸업작품 프로젝트",
         default_version='version Alpha 0.0.1',
-        description="문서 상세 설명",
+        description="Movie recommendation service as API",
         terms_of_service="https://github.com/mytv100/Eris_Project",
         # 이메일 형식 안맞으면 internal error 발생함
         contact=openapi.Contact(email="mytv7609@gmail.com"),
         license=openapi.License(name="NO Licence!!!!"),
     ),
     validators=['flex', 'ssv'],
-    public=True,
+
+    # public = True면 모든 API가 권한에 상관없이 보여짐
+    # False 로 설정해서 권한이 없는 API는 볼 수 없게함
+    # 영화 & 배우 데이터를 저장하는건 관리자만 가능함
+    public=False,
+
     permission_classes=(permissions.AllowAny,),
 
 )
-
 urlpatterns = [
+    # 관리자 페이지
     path('admin/', admin.site.urls),
 
     # react without ui & only data
     # path('swagger<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+
+    # swagger ui design 2개
     path('api/doc/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui', ),
     path('api/doc/redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
+    # 영화 추천 앱
     path('movie-recommend/', include('movie_recommendation.urls'), name='product-recommend-app'),
-    # rest_framework Authentication
+
+    # rest_framework Authentication (로그인, 로그아웃 기능)
     path(r'api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 
 ]
-
