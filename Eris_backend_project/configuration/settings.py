@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-# github에 SECRET_KEY가 올라가는 것을 방
+# github에 SECRET_KEY가 올라가는 것을 방지
 secret_file = os.path.join(BASE_DIR, 'configuration/secrets.json')
 
 with open(secret_file) as f:
