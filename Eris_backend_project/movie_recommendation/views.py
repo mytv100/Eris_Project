@@ -51,8 +51,6 @@ class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
         for query in self.queryset.filter(businessPartner=request.user):
             if request.data['movie']['title'] == query.movie.title:
                 headers = self.get_success_headers(None)
-                # 202 말고 다른 error 필요함 뭔지 잘 모르겠음
-                # 중복된 거 있으면 안받아줌
                 return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
         serializer = self.get_serializer(data=request.data)
@@ -75,8 +73,6 @@ class CustomerAPIViewSet(viewsets.ModelViewSet):
         for query in self.queryset:
             if request.user.username + "-" + request.data["nickname"] == query.nickname:
                 headers = self.get_success_headers(None)
-                # 202 말고 다른 error 필요함 뭔지 잘 모르겠음
-                # 중복된 거 있으면 안받아줌
                 return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
         request.data["nickname"] = request.user.username + "-" + request.data["nickname"]
@@ -104,8 +100,6 @@ class ActorMovieAPIViewSet(viewsets.ModelViewSet):
         for query in self.queryset:
             if request.data['movie']['title'] == query.movie.title:
                 headers = self.get_success_headers(None)
-                # 202 말고 다른 error 필요함 뭔지 잘 모르겠음
-                # 중복된 거 있으면 안받아줌
                 return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
         serializer = self.get_serializer(data=request.data)
@@ -131,8 +125,6 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
                 for m in Movie.objects.filter(title=request.data['movie']['title']):
                     if query.movie == m:
                         headers = self.get_success_headers(None)
-                        # 202 말고 다른 error 필요함 뭔지 잘 모르겠음
-                        # 중복된 거 있으면 안받아줌
                         return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
         # customer nickname 으로 구분할 수 있도록 Businesspartner.name-Customer.nickname 으로 구성
         request.data['customer']["nickname"] = request.user.username + "-" + request.data['customer']["nickname"]
