@@ -32,9 +32,9 @@ def signup(request):
             new_user = User.objects.create_user(**form.cleaned_data)
             login(request, new_user)
             return redirect('/api/doc/')
-        else:
-            form = UserForm()
-            return render(request, 'signup.html', {'form': form})
+    else:
+        form = UserForm()
+        return render(request, 'signup.html', {'form': form})
 
 
 class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
@@ -59,7 +59,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
         serializer.validated_data["businesspartner"] = {"username": request.user.username}
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST, headers=headers)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class CustomerAPIViewSet(viewsets.ModelViewSet):

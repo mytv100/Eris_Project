@@ -51,7 +51,7 @@ urlpatterns = [
     path('api/doc/redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
     # 영화 추천 앱
-    path('movie-recommend/', include('movie_recommendation.urls'), name='product-recommend-app'),
+    path('movie-recommend/', include('movie_recommendation.urls'), name='movie-recommend-app'),
 
     # rest_framework Authentication (로그인, 로그아웃 기능)
     path(r'api-auth/', include('rest_framework.urls', namespace='rest_framework'))
