@@ -53,6 +53,7 @@ class MovieTitleSerializer(serializers.ModelSerializer):
     """
     영화 제목만 있는 serializer
     """
+
     class Meta:
         model = Movie
         fields = ["title", ]
@@ -64,6 +65,7 @@ class BusinessPartnerMovieSerializer(serializers.ModelSerializer):
     """
     movie = MovieTitleSerializer()
 
+    # movie_list = serializers.ListField(child=MovieTitleSerializer())
     class Meta:
         model = BusinessPartnerMovie
         fields = ["movie", ]
@@ -79,6 +81,7 @@ class CustomerNameSerializer(serializers.ModelSerializer):
     """
     고객 닉네임만 있는 serializer
     """
+
     class Meta:
         model = Customer
         fields = ["nickname", ]
