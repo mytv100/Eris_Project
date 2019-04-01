@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from forms.signup import UserForm
 from movie_recommendation.models import ActorMovie, CustomerMovie, BusinessPartnerMovie, \
     Customer, BusinessPartner, Movie
+from movie_recommendation.module.filtering import movie_filtering
 from movie_recommendation.serializers import ActorMovieSerializer, CustomerMovieSerializer, \
     BusinessPartnerMovieSerializer, CustomerSerializer, MovieListSerializer
 
@@ -146,8 +147,7 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
         customers = Customer.objects.filter(associated_bp=request.user)
         for customer in customers:
             if customer.nickname == request.user.username + "-" + request.data['customer']['nickname']:
-                # result_list = movie_filtering(customer, request.data['movie'])
-                result_list = None
+                result_list = movie_filtering(customer, request.data['movie'])
                 serializer = self.get_serializer(result_list, many=True)
                 return Response(serializer.data)
 
