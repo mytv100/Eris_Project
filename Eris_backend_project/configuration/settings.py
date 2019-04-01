@@ -57,7 +57,7 @@ INSTALLED_APPS = [
 
     'django_extensions',
 
-    # 너가 만든 모듈
+    # 커스텀 모듈
     'movie_recommendation',
 
 ]
