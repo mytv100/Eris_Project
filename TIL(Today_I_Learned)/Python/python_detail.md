@@ -52,3 +52,34 @@ step = -1 이 된다.
 
 ---
 
+plain python file(.py)에서 django 의 클래스를 import 하려고 하니까 
+error가 발생함
+
+-> Run/Debug Configurations 편집 창에서 환경 변수에
+`DJANGO_SETTINGS_MODULE=configuration.settings` 를 추가 해줌
+
+->.py 에 import django; django.setup() 넣어줌
+
+=> django의 클래스를 사용하려면 장고가 setup을 해줘야 사용가능하다.
+
+---
+#### pickle
+```
+# pickle 로 데이터 파일에 저장
+# data 는 클래스나 dictionary 같은 객체도 가능
+# binary 형태로 저장하기 떄문에 "wb" 로 열어야함
+f=open("text.txt","wb")
+pickle.dump(data,f)
+f.close()
+
+# pickle 로 데이터 파일에서 읽어오기
+f=open("text.txt","rb")
+data = pickle.load(f)
+f.close()
+```
+
+---
+import 부분에 대하여
+relative 알아보기
+
+---
