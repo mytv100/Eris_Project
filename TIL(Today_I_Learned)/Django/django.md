@@ -64,3 +64,12 @@ ex)`request : Request`
 변수의 타입을 지정해줌
 -> 지정해주면 `request.` 했을때 자동완성에서
 적절한 것 찾아서 보여줌
+
+---
+
+`Model.objects` return the manager instance
+-> iterator로 사용 불가능
+`Model.objects.all()` return get_query_set()
+
+`Model.objects.filter()` == `Model.objects.all().filter()`
+-> 같은 결과 반환 
