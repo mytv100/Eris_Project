@@ -73,3 +73,6 @@ ex)`request : Request`
 
 `Model.objects.filter()` == `Model.objects.all().filter()`
 -> 같은 결과 반환 
+
+---
+
