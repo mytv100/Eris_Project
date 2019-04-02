@@ -79,6 +79,43 @@ f.close()
 ```
 
 ---
+연산자 `/` 와 `//` 의 차이
+둘 다 나눗셈이며,  
+`/` 는 float `//` 는 int 로 나타남
+
+`_` underscore
+
+* 인터프리터에서는 마지막 실행된 결과값 저장된다.
+* 값을 무시하고 싶을 때 사용, 언패킹시, 반복문 인덱스
+```python
+x, _, y = (1, 2, 3, 4) # x = 1 , y = 4
+for _, val in [(1,3),(2,4)]: # val = 3, val = 4
+    pass        
+```
+* (Python 3.6) 숫자 리터럴 값의 자릿수 구분
+```python
+dec_base = 1_000_000    # 1000000
+hex_base = 0x_1234_abcd # 305441741
+```
+* _get_something : private 과 비슷한 역할 (외부에서 사용하지 말라는 표시, 사용은 가능함)
+
+`__` double underscore
+* __method : subclass 에서 이 method 를 override 해도 효과가 없음. 부모 클래스의 __method 가 반응함
+* __method__ : [rule] don't call it, because it's a method python calls | 파이썬꺼임 건들지마셈
+---
+
+enumerate : 반복문 사용 시 몇 번째 반복문인지 확인이 필요하다. # 이거 종종 필요함
+            인덱스 번호와 컬렉션의 원소를 tuple 형태로 반환
+```python
+t = [1, 5, 7, 9]
+for p in enumerate(t):
+    print(p)
+# (0, 1)
+# (1, 5)
+# (2, 7)
+# (3, 9)
+```
+---
 import 부분에 대하여
 relative 알아보기
 
