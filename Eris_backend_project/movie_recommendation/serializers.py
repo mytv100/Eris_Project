@@ -119,3 +119,19 @@ class MovieListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ['customer', 'movie']
+
+
+class BusinessPartnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusinessPartner
+        fields = ['username', 'password']
+        write_only_fields = ('password',)
+
+    def create(self, validated_data: Any):
+        businesspartner = BusinessPartner.objects.create(
+            username=validated_data['username'],
+        )
+        businesspartner.set_password(validated_data['password'])
+        businesspartner.save()
+
+        return businesspartner

@@ -22,10 +22,10 @@ router.register(r'actorMovie', views.ActorMovieAPIViewSet)
 # 업체의 고객 정보 /customer/
 router.register(r'customer', views.CustomerAPIViewSet)
 
+# 업체 회원 가입 /signup/
+router.register(r'signup', views.CreateBusinessPartnerAPIViewSet)
 
 urlpatterns = [
-    # 회원가입 -> 바로 로그인되서 /api/doc/로 넘어감
-    path('join/', views.signup, name='join'),
 ]
 
 urlpatterns += router.urls
