@@ -66,6 +66,9 @@ class Movie(models.Model):
         through='BusinessPartnerMovie',
     )
 
+    class Meta:
+        unique_together = (("title", "director"),)
+
 
 class BusinessPartnerMovie(models.Model):
     """
