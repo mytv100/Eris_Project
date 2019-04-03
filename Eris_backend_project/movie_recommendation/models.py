@@ -66,8 +66,11 @@ class Movie(models.Model):
         through='BusinessPartnerMovie',
     )
 
-    class Meta:
-        unique_together = (("title", "director"),)
+    # class Meta:
+    #     # pk 대신 조회에 사용할 키
+    # 없어도 되겠는데..?
+    #     # unique_index
+    #     unique_together = (("title", "director"),)
 
 
 class BusinessPartnerMovie(models.Model):
