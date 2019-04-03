@@ -28,7 +28,8 @@ class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
     def create(self, request: Request, *args: Any, **kwargs: Any):
         # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset.filter(businessPartner=request.user):
-            if request.data['movie']['title'] == query.movie.title:
+            if request.data['movie']['title'] == query.movie.title and \
+                    request.data['movie']['director'] == query.movie.director:
                 headers = self.get_success_headers(None)
                 return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
@@ -77,7 +78,8 @@ class ActorMovieAPIViewSet(viewsets.ModelViewSet):
     def create(self, request: Request, *args: Any, **kwargs: Any):
         # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset:
-            if request.data['movie']['title'] == query.movie.title:
+            if request.data['movie']['title'] == query.movie.title and \
+                    request.data['movie']['director'] == query.movie.director:
                 headers = self.get_success_headers(None)
                 return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
@@ -101,7 +103,8 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
         # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset:
             if request.user.username + "-" + request.data['customer']["nickname"] == query.customer.nickname:
-                for m in Movie.objects.filter(title=request.data['movie']['title']):
+                for m in Movie.objects.filter(title=request.data['movie']['title'],
+                                              director=request.data['movie']['director']):
                     if query.movie == m:
                         headers = self.get_success_headers(None)
                         return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)

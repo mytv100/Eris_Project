@@ -51,12 +51,12 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 class MovieTitleSerializer(serializers.ModelSerializer):
     """
-    영화 제목만 있는 serializer
+    영화 제목과 감독명만 있는 serializer
     """
 
     class Meta:
         model = Movie
-        fields = ["title", ]
+        fields = ["title", "director"]
 
 
 class BusinessPartnerMovieSerializer(serializers.ModelSerializer):
