@@ -51,11 +51,10 @@ class CustomerAPIViewSet(viewsets.ModelViewSet):
     def create(self, request: Request, *args: Any, **kwargs: Any):
         # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset:
-            if request.user.username + "-" + request.data["nickname"] == query.nickname:
+            if request.data["nickname"] == query.nickname and request.user.username == query.associated_bp.username:
                 headers = self.get_success_headers(None)
                 return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
-        request.data["nickname"] = request.user.username + "-" + request.data["nickname"]
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         # validated_data에 "associated_bp" (FK BusinessPartner)의 값을 넣어줌
@@ -102,14 +101,12 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
     def create(self, request: Request, *args: Any, **kwargs: Any):
         # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
         for query in self.queryset:
-            if request.user.username + "-" + request.data['customer']["nickname"] == query.customer.nickname:
+            if request.data['customer']["nickname"] == query.customer.nickname:
                 for m in Movie.objects.filter(title=request.data['movie']['title'],
                                               director=request.data['movie']['director']):
                     if query.movie == m:
                         headers = self.get_success_headers(None)
                         return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
-        # customer nickname 으로 구분할 수 있도록 Businesspartner.name-Customer.nickname 으로 구성
-        request.data['customer']["nickname"] = request.user.username + "-" + request.data['customer']["nickname"]
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -125,9 +122,9 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
         필터링(추천 알고리즘) 과정을 거쳐서
         리스트로 반환해줌
         """
-        customers = Customer.objects.filter(associated_bp=request.user)
+        customers = Customer.objects.filter(associated_bp=request.user.id)
         for customer in customers:
-            if customer.nickname == request.user.username + "-" + request.data['customer']['nickname']:
+            if customer.nickname == request.data['customer']['nickname']:
                 result_list = movie_filtering(customer, request.data['movie'])
                 serializer = self.get_serializer(result_list, many=True)
                 return Response(serializer.data)

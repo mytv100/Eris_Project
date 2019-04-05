@@ -81,7 +81,6 @@ class CustomerNameSerializer(serializers.ModelSerializer):
     """
     고객 닉네임만 있는 serializer
     """
-
     class Meta:
         model = Customer
         fields = ["nickname", ]
