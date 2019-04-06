@@ -22,20 +22,13 @@ Eris_Project
  * /api/doc/redoc/  redoc문서 적용
  
  
- 
-# Frontend (Angular)
- * Frontend는 AngularJS를 사용
- > 여긴 아직 잘 모르니까 나중에 시간이 나면 알아보도록 하자!
- 
-
  <hr/>
  
  
  ## 파일 구성
 
 |폴더 이름 |설명                         |
-|:--        |:--                          |
-|Eris_frontend_project       |Frontend 프로젝트 디렉토리|
+|:--        |:--                          | 
 |Eris_backend_project       |Backend 프로젝트 디렉토리    |
 |TIL(Today_I_Learned)       |공부한 내용 정리    |
 |plan       |이 프로젝트의 진행 방향 정리    |
