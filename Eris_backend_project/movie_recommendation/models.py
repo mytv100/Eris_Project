@@ -20,44 +20,69 @@ class BusinessPartner(User):
 class Movie(models.Model):
     """
     영화 데이터
+    movie_pk PrimaryKey
     title 제목
     genre 장르
     description 줄거리
     rate 평점
+    votes 투표수
     running_time 영화 시간(분)
     created_at 이 객체가 생성된 시간
     director 감독
     movie_owner 이 영화를 가지고 있는 업체 (ManyToManyField 로 through 클래스로 구현)
 
     """
+    # 이 값이 영화가 계속 추가되면 달라져야하는데..?
+    movie_pk: str = models.CharField(
+        help_text="영화의 PrimaryKey",
+        max_length=64,
+        null=False,
+        primary_key=True
+    )
+
     title: str = models.CharField(
+        help_text="영화 제목",
         max_length=128,
         null=False,
     )
 
     genre: str = models.CharField(
+        help_text="영화 장르, ',' 를 기준으로 분류",
         max_length=128,
         null=False,
     )
 
     description: str = models.CharField(
+        help_text="영화 줄거리",
         max_length=256,
-        null=False,
+        null=True,
+        default="Lorem ipsum dolor sit amet, "
+                "consectetur adipiscing elit. "
+                "Nam eget consequat eros, a lacinia turpis. "
+                "Phasellus faucibus commodo diam",
     )
 
     rate: float = models.FloatField(
+        help_text="영화 평점",
         null=False,
-        default=None,
+        default=0.0,
+    )
+    votes: int = models.IntegerField(
+        help_text="퍙점 투표수",
+        null=False,
+        default=0
     )
     running_time: int = models.IntegerField(
         help_text="영화 시간, 분을 기준으로",
         default=0,
     )
 
+    # 생성된 날짜, 시간
     created_at: datetime = CreationDateTimeField()
 
     director: str = models.CharField(
-        max_length=64,
+        help_text="감독명, ',' 를 기준으로 분류",
+        max_length=128,
         null=False,
     )
 
@@ -93,15 +118,23 @@ class BusinessPartnerMovie(models.Model):
 class Actor(models.Model):
     """
     배우 데이터
+    actor_pk PrimaryKey
     name 이름
     created_at 이 객체가 생성된 시간
     movie 배우가 출연한 영화 ( M2M field through 클래스로 구현)
     """
     name: str = models.CharField(
-        max_length=64,
+        help_text="배우 이름, ',' 를 기준으로 분류",
+        max_length=128,
         null=False,
     )
 
+    actor_pk: str = models.CharField(
+        help_text="영화의 PrimaryKey",
+        max_length=64,
+        null=False,
+        primary_key=True
+    )
     created_at: datetime = CreationDateTimeField()
 
     movie: Movie = models.ManyToManyField(
@@ -141,18 +174,17 @@ class Customer(models.Model):
     movie 고객이 평가한 영화 ( M2M field through 클래스로 구현)
     created_at 이 객체가 생성된 시간
     """
-    # booleanField 로 변경 가능
-    gender: str = models.CharField(
-        max_length=16,
-        null=False,
-        default="man",
+    gender: str = models.BooleanField(
+        help_text="고객의 성별, True 남성, False 여성"
     )
 
     age: int = models.IntegerField(
+        help_text="고객의 나이",
         null=False
     )
 
     nickname: str = models.CharField(
+        help_text="업체에서의 ID",
         max_length=64,
         null=False,
     )
@@ -189,6 +221,10 @@ class CustomerMovie(models.Model):
         on_delete=models.CASCADE
     )
 
-    rate: float = models.FloatField(null=False, default=None)
+    rate: float = models.FloatField(
+        help_text="고객의 영화에 대한 평점",
+        null=False,
+        default=None
+    )
 
     created_at: datetime = CreationDateTimeField()
