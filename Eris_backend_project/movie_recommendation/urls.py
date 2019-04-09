@@ -25,6 +25,9 @@ router.register(r'customer', views.CustomerAPIViewSet)
 # 업체 회원 가입 /signup/
 router.register(r'signup', views.CreateBusinessPartnerAPIViewSet)
 
+# 데이터 초기화
+router.register(r'init', views.InitViewSet)
+
 urlpatterns = [
 ]
 
