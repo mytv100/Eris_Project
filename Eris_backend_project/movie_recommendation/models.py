@@ -42,14 +42,14 @@ class Movie(models.Model):
 
     title: str = models.CharField(
         help_text="영화 제목",
-        max_length=128,
+        max_length=256,
         null=False,
     )
 
     genre: str = models.CharField(
         help_text="영화 장르, ',' 를 기준으로 분류",
-        max_length=128,
-        null=False,
+        max_length=256,
+        default="genre"
     )
 
     description: str = models.CharField(
@@ -64,13 +64,11 @@ class Movie(models.Model):
 
     rate: float = models.FloatField(
         help_text="영화 평점",
-        null=False,
         default=0.0,
     )
     votes: int = models.IntegerField(
         help_text="퍙점 투표수",
-        null=False,
-        default=0
+        default=0,
     )
     running_time: int = models.IntegerField(
         help_text="영화 시간, 분을 기준으로",
@@ -82,8 +80,9 @@ class Movie(models.Model):
 
     director: str = models.CharField(
         help_text="감독명, ',' 를 기준으로 분류",
-        max_length=128,
-        null=False,
+        max_length=256,
+        null=True,
+
     )
 
     movie_owner: BusinessPartner = models.ManyToManyField(
@@ -125,7 +124,7 @@ class Actor(models.Model):
     """
     name: str = models.CharField(
         help_text="배우 이름, ',' 를 기준으로 분류",
-        max_length=128,
+        max_length=256,
         null=False,
     )
 
