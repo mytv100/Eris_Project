@@ -43,6 +43,33 @@ class ActorMovieSerializer(serializers.Serializer):
         return actor_movie
 
 
+class CustomActorMovieSerializer(serializers.Serializer):
+
+    def save(self):
+        movie = self.validated_data['movie']
+        actor = self.validated_data['actor']
+        actor_movie = ActorMovie.objects.create(actor=actor, movie=movie)
+        return actor_movie
+
+    def to_internal_value(self, data: Any):
+        actor = data.get("actor")
+        movie = data.get("movie")
+
+        if not actor:
+            raise serializers.ValidationError({
+                'actor': "This field is required"
+            })
+        if not movie:
+            raise serializers.ValidationError({
+                "movie": "This field is required"
+            })
+
+        return {
+            "actor": actor,
+            "movie": movie
+        }
+
+
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
@@ -81,6 +108,7 @@ class CustomerNameSerializer(serializers.ModelSerializer):
     """
     고객 닉네임만 있는 serializer
     """
+
     class Meta:
         model = Customer
         fields = ["nickname", ]
@@ -107,17 +135,14 @@ class CustomerMovieSerializer(serializers.ModelSerializer):
         return customer_movie
 
 
-class MovieListSerializer(serializers.ModelSerializer):
+class MovieListSerializer(serializers.Serializer):
     """
     고객 닉네임과 영화 이름(선택)을 선택받아서
     추천 리스트 반환해주기 위한 Serializer
     """
-    customer = CustomerNameSerializer()
-    movie = MovieTitleSerializer()
 
-    class Meta:
-        model = Customer
-        fields = ['customer', 'movie']
+    customer = CustomerNameSerializer(write_only=True)
+    movie = MovieTitleSerializer(write_only=True)
 
 
 class BusinessPartnerSerializer(serializers.ModelSerializer):
@@ -134,3 +159,36 @@ class BusinessPartnerSerializer(serializers.ModelSerializer):
         businesspartner.save()
 
         return businesspartner
+
+
+class CustomMovieListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        exclude = ['movie_owner', 'created_at', 'movie_pk']
+
+    def to_internal_value(self, data: Any):
+        movie_list = []
+        for i in range(len(data)):
+            movie = data.get(i)
+            movie_list.append(movie)
+        if not movie_list:
+            raise serializers.ValidationError({
+                "movie_list": "This field is required"
+            })
+
+        return movie_list
+
+    def to_representation(self, instance: Any):
+        movie_list = {}
+        for i, j in enumerate(instance):
+            movie = Movie.objects.get(pk=j.movie_pk)
+            movie_list[i] = {
+                "movie_pk": movie.movie_pk,
+                "title": movie.title,
+                "genre": movie.genre,
+                "director": movie.director,
+                "running_time": movie.running_time,
+                "rate": movie.rate,
+                "description": movie.description,
+            }
+        return movie_list
