@@ -6,3 +6,6 @@ venv
 configuration/secrets.json
 
 configuration/__pycache__/*
+
+movie_recommendation/data
+movie_recommendation/module/data
