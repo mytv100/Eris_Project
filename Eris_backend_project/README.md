@@ -1,13 +1,12 @@
 Eris_Backend_Project
 ====================
-product recommendation service
+movie recommendation service
 ------------------------------ 
  
 # Django - Python
 ##  Django REST framework
  
-
-<hr/>
+ 
  
  
  ## 파일 구성
@@ -15,11 +14,11 @@ product recommendation service
 |폴더 이름 |설명                         |
 |:--        |:--                          |
 |configuration       |설정 폴더|
-|product_recommendation       |상품 추첨 앱    | 
+|movie_recommendation       |영화 추첨 앱    | 
 |.gitignore       |github에 올리지 않는 목록    |
-|README.md    |프로젝트 설명 |
 |manage.py     |manage.py  |
 |requirements.txt     |필요한 라이브러리 목록  |
+|README.md    |프로젝트 설명 |
 
  
 ## 요구사항
