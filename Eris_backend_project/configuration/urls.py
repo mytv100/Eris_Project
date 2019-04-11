@@ -43,9 +43,6 @@ urlpatterns = [
     # 관리자 페이지
     path('admin/', admin.site.urls),
 
-    # react without ui & only data
-    # path('swagger<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-
     # swagger ui design 2개
     path('api/doc/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui', ),
     path('api/doc/redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
