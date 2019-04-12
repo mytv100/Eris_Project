@@ -128,7 +128,7 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
         movie = Movie.objects.get(title=request.data['movie']['title'], director=request.data['movie']['director'])
         result_dict = {}
         movie_list = []
-        result_list = movie_filtering(customer, movie)
+        result_list = movie_filtering(customer.id, movie.movie_pk, request.user.id)
         for i, j in enumerate(result_list):
             result_dict[i] = j
 
