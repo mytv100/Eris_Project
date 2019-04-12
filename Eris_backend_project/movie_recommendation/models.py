@@ -6,7 +6,7 @@ from django.db import models
 from django_extensions.db.fields import CreationDateTimeField
 
 
-# BusinessPartner table 안 생김 super&sub type
+# BusinessPartner table 안 생김
 class BusinessPartner(User):
     """
     업체(추천 서비스를 직접 사용하는)
@@ -89,12 +89,6 @@ class Movie(models.Model):
         BusinessPartner,
         through='BusinessPartnerMovie',
     )
-
-    # class Meta:
-    #     # pk 대신 조회에 사용할 키
-    # 없어도 되겠는데..?
-    #     # unique_index
-    #     unique_together = (("title", "director"),)
 
 
 class BusinessPartnerMovie(models.Model):
