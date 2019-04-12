@@ -181,7 +181,7 @@ class CustomMovieListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance: Any):
         movie_list = {}
         for i, j in enumerate(instance):
-            movie = Movie.objects.get(pk=j.movie_pk)
+            movie = Movie.objects.get(pk=j["movie"])
             movie_list[i] = {
                 "movie_pk": movie.movie_pk,
                 "title": movie.title,
