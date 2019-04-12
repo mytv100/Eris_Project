@@ -20,6 +20,10 @@ class BusinessPartner(User):
 ### ManyToMany field
 다대다 관계에 있는 모델 사이에 
 새로운 field 를 추가해주고 싶을 때 사용한다.
+
+on_delete=models.CASCADE : 외래 키가 삭제되면, 이 행도 삭제된다.
+-> 근데 적용이 안됨..
+ 
 ```python
 class Movie(models.Model):
     ...
@@ -75,4 +79,13 @@ ex)`request : Request`
 -> 같은 결과 반환 
 
 ---
+primary_key : 오직 1개만 존재할 수 있다.
+
+unique index : 여러 개 가능, but 중복은 안됨
+```python
+class Model(models.Model):
+    class Meta:
+        unique_together = ((field1, field2),)
+
+```
 
