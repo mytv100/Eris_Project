@@ -1,10 +1,11 @@
 .idea
 
-/Eris-frontend-project/node_modules/*
 /Eris_backend_project/venv/*
 
-Eris_backend_project/product_recommendation/__pycache__/
-Eris_backend_project/product_recommendation/migrations/__pycache__/
+Eris_backend_project/movie_recommendation/__pycache__/
+Eris_backend_project/movie_recommendation/migrations/__pycache__/
+Eris_backend_project/movie_recommendation/data
+Eris_backend_project/movie_recommendation/module/data
 
 Eris_backend_project/.idea
 Eris_backend_project/db.sqlite3
