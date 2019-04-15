@@ -39,7 +39,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         # 로그인한 사용자(업체)의 username 값을 넣어줌
-        serializer.validated_data["businesspartner"] = {"username": request.user.username}
+        serializer.validated_data["business_partner"] = {"username": request.user.username}
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

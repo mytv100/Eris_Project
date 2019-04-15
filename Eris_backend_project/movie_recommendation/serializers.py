@@ -92,16 +92,15 @@ class BusinessPartnerMovieSerializer(serializers.ModelSerializer):
     """
     movie = MovieTitleSerializer()
 
-    # movie_list = serializers.ListField(child=MovieTitleSerializer())
     class Meta:
         model = BusinessPartnerMovie
         fields = ["movie", ]
 
     def create(self, validated_data: Any):
         movie = Movie.objects.get(**validated_data.get('movie'))
-        businesspartner = BusinessPartner.objects.get(**validated_data.get('businesspartner'))
-        businesspartner_movie = BusinessPartnerMovie.objects.create(businessPartner=businesspartner, movie=movie)
-        return businesspartner_movie
+        business_partner = BusinessPartner.objects.get(**validated_data.get('business_partner'))
+        business_partner_movie = BusinessPartnerMovie.objects.create(businessPartner=business_partner, movie=movie)
+        return business_partner_movie
 
 
 class CustomerNameSerializer(serializers.ModelSerializer):
