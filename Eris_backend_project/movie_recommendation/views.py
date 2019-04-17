@@ -15,54 +15,149 @@ from movie_recommendation.module.filtering import movie_filtering
 from movie_recommendation.permissions import UserPermission
 from movie_recommendation.serializers import ActorMovieSerializer, CustomerMovieSerializer, \
     BusinessPartnerMovieSerializer, CustomerSerializer, MovieListSerializer, BusinessPartnerSerializer, \
-    ActorSerializer, CustomActorMovieSerializer, MovieSerializer, CustomMovieListSerializer
+    ActorSerializer, CustomActorMovieSerializer, MovieSerializer, CustomMovieListSerializer, MovieTitleSerializer, \
+    CustomerUpdateSerializer
 import csv
 
 
-class BusinessPartnerMovieAPIViewSet(viewsets.ModelViewSet):
+class CustomerAPIViewSet(viewsets.GenericViewSet,
+                         mixins.DestroyModelMixin,
+                         mixins.RetrieveModelMixin,
+                         mixins.ListModelMixin,
+                         mixins.CreateModelMixin, ):
     """
-    업체가 보유한 영화
+    Customer CRUD API for BusinessPartner
     """
-    queryset = BusinessPartnerMovie.objects.all()
-    serializer_class = BusinessPartnerMovieSerializer
-    # 로그인 해야만 접근 가능
-    permission_classes = [IsAuthenticated]
+    queryset = Customer.objects.all()
+    permission_classes = [IsAuthenticated]    # 로그인 해야만 접근 가능
+    serializer_class = CustomerSerializer
+    lookup_field = ('nickname') # id 값 대신 nickname 필드를 조회에 사용
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
-        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
-        for query in self.queryset.filter(businessPartner=request.user):
-            if request.data['movie']['title'] == query.movie.title and \
-                    request.data['movie']['director'] == query.movie.director:
-                headers = self.get_success_headers(None)
-                return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
-
+        """
+        고객 데이터 입력(생성)
+        age 숫자
+        gender boolean or 숫자(0=false)
+        nickname string(중복X)
+        """
+        if self.get_instance():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        request.data['associated_bp'] = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # 로그인한 사용자(업체)의 username 값을 넣어줌
-        serializer.validated_data["business_partner"] = {"username": request.user.username}
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    # custom view for update
+    @action(detail=True, methods=['patch'], serializer_class=CustomerUpdateSerializer)
+    def update_customer(self, request: Request,):
+        """
+        변경할 정보 입력
+        "age" : 10,
+        "gender" : true | 1 -> (man) or false | -0 > (woman)
+        """
+        if not self.get_instance():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        instance = self.get_queryset().get(nickname=self.kwargs['nickname'])
+        request.data['associated_bp'] = request.user
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
-class CustomerAPIViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        """
+        업체에 속해있는 고객 조회
+        """
+        queryset = Customer.objects.all().filter(associated_bp=self.request.user)
+        return queryset
+
+    def get_instance(self):
+        """
+        POST (CREATE) 면 self.request.data['nickname'] 을 이용해서
+        PATCH (UPDATE) 면 self.kwargs['nickname'] 을 이용해서
+        :return: 존재하면 True 없으면 False
+        """
+        if self.request.method == "POST":
+            return self.get_queryset().filter(nickname=self.request.data['nickname'])
+        elif self.request.method == "PATCH":
+            return self.get_queryset().filter(nickname=self.kwargs['nickname'])
+
+
+class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
+                                     mixins.CreateModelMixin,
+                                     mixins.ListModelMixin,
+                                     ):
+    """
+    업체가 보유한 영화에 대한 API
+    create :
+    """
+    queryset = Movie.objects.all()
+    serializer_class = BusinessPartnerMovieSerializer
     # 로그인 해야만 접근 가능
     permission_classes = [IsAuthenticated]
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
+
+    def list(self, request: Request, *args: Any, **kwargs: Any):
+        queryset = self.queryset.filter(movie_owner=request.user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    # @action(detail=False, methods=['get'], serializer_class=MovieTitleSerializer)
+    # def retrieve_bp_movie(self, request):
+    #     movie_query = self.queryset.filter(movie_owner=request.user, title=request.data['movie']['title'],
+    #                                        director__contains=request.data['movie']['director'])
+    #     if not movie_query.get():
+    #         return Response(status=status.HTTP_400_BAD_REQUEST)
+    #     else:
+    #
+    #         serializer = MovieSerializer(data=data)
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['delete'], serializer_class=MovieTitleSerializer)
+    def delete_bp_movie(self, request):
+        movie_query = self.queryset.filter(movie_owner=request.user, title=request.data['movie']['title'],
+                                           director__contains=request.data['movie']['director'])
+        if not movie_query.get():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            movie_query.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
+        """
+        여기다 쓰면 보이냐 보인다
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
-        for query in self.queryset:
-            if request.data["nickname"] == query.nickname and request.user.username == query.associated_bp.username:
-                headers = self.get_success_headers(None)
-                return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
+        if self.queryset.filter(movie_owner=request.user, title=request.data['movie']['title'],
+                                director__contains=request.data['movie']['director']):
+            headers = self.get_success_headers(None)
+            return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
 
+        # 로그인한 사용자(업체)를 넣어줌
+        request.data['business_partner'] = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # validated_data에 "associated_bp" (FK BusinessPartner)의 값을 넣어줌
-        serializer.validated_data["associated_bp"] = BusinessPartner.objects.get(username=request.user.username)
         self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(detail=False, methods=['patch'], serializer_class=MovieSerializer)
+    def update_bp_movie(self, request):
+        request.data['business_partner'] = request.user
+        serializer = CustomMovieListSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -136,7 +231,6 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet):
         serializer = CustomMovieListSerializer(data=movie_list, many=True)
         serializer.is_valid(raise_exception=True)
         headers = self.get_success_headers(serializer.data)
-
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
@@ -245,7 +339,7 @@ class InitViewSet(viewsets.GenericViewSet,
                 serializer.save()
         f.close()
 
-        # actormovie data
+        # actor_movie data
         f = open("movie_recommendation/data/actormovie.tsv", "r", encoding='utf-8')
         rows = csv.reader(f, delimiter='\t')
 
@@ -254,11 +348,11 @@ class InitViewSet(viewsets.GenericViewSet,
             movie = Movie.objects.get(movie_pk=row[0])
             actors = Actor.objects.filter(actor_pk=row[1])
             for actor in actors:
-                actormovie_data = {
+                actor_movie_data = {
                     "actor": actor,
                     "movie": movie,
                 }
-                serializer = CustomActorMovieSerializer(data=actormovie_data)
+                serializer = CustomActorMovieSerializer(data=actor_movie_data)
                 print(serializer)
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
