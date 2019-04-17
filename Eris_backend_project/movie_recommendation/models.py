@@ -114,7 +114,7 @@ class Actor(models.Model):
     actor_pk PrimaryKey
     name 이름
     created_at 이 객체가 생성된 시간
-    movie 배우가 출연한 영화 ( M2M field through 클래스로 구현)
+    movie 배우가 출연한 영화 ( M2M field  클래스로 구현)
     """
     name: str = models.CharField(
         help_text="배우 이름, ',' 를 기준으로 분류",
@@ -133,7 +133,6 @@ class Actor(models.Model):
     movie: Movie = models.ManyToManyField(
         Movie,
         through='ActorMovie',
-        through_fields=('actor', 'movie'),
     )
 
 
@@ -160,9 +159,9 @@ class ActorMovie(models.Model):
 class Customer(models.Model):
     """
     고객 데이터 (업체의 고객)
-    gender 성별
+    gender 성별 True 남성, False 여성
     age 나이
-    nickname 아이디, 닉네임 (저장할 때는 업체별로 회원이 겹칠 수 있으므로 businessPartner-nickname 으로 저장
+    nickname 아이디, 닉네임
     associated_bp 소속된 업체 (FK)
     movie 고객이 평가한 영화 ( M2M field through 클래스로 구현)
     created_at 이 객체가 생성된 시간
@@ -190,7 +189,6 @@ class Customer(models.Model):
     movie: Movie = models.ManyToManyField(
         Movie,
         through='CustomerMovie',
-        through_fields=('customer', 'movie'),
     )
 
     created_at: datetime = CreationDateTimeField()
