@@ -13,7 +13,6 @@ router.register(r'customerMovie', views.CustomerMovieAPIViewSet)
 # 업체 - 영화 M2M
 # 각 업체별 소유한 영화 /businessPartnerMovie        permission = IsAdmin
 router.register(r'businessPartnerMovie', views.BusinessPartnerMovieAPIViewSet)
-
 # 배우 - 영화 M2M
 # 영화에 출연하는 배우들 /actorMovie/     permission = IsAdmin
 router.register(r'actorMovie', views.ActorMovieAPIViewSet)
