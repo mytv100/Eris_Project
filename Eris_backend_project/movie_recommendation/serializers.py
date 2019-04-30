@@ -12,6 +12,12 @@ from movie_recommendation.models import Customer
 from movie_recommendation.models import BusinessPartner
 
 
+class MovieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        exclude = ('movie_owner',)
+
+
 class CustomerSerializer(serializers.ModelSerializer):
     """
     고객 정보 입력 및 출력용
@@ -24,13 +30,9 @@ class CustomerSerializer(serializers.ModelSerializer):
         exclude = ['associated_bp', 'movie']
 
     def to_internal_value(self, data: Any):
-        # Dict of native values <- Dict of primitive datatypes.
         age = data.get('age')
-        associated_bp = data.get('associated_bp')
         nickname = data.get('nickname')
         gender = data.get('gender')
-
-        # Perform the data validation.
 
         if not nickname:
             raise serializers.ValidationError({
@@ -40,22 +42,15 @@ class CustomerSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'age': 'This field is required.'
             })
-        if not associated_bp:
-            raise serializers.ValidationError({
-                'associated_bp': 'This field is required.'
-            })
         if gender == "":
             raise serializers.ValidationError({
                 'gender': 'This field is required.'
             })
 
-        # Return the validated values. This will be available as
-        # the `.validated_data` property.
         return {
             "age": age,
             "gender": gender,
             "nickname": nickname,
-            "associated_bp": associated_bp,
         }
 
     def to_representation(self, instance):
@@ -96,7 +91,7 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ['nickname', 'update_field']
+        fields = ['update_field']
 
     def update(self, instance: Model, validated_data: Any):
 
@@ -106,16 +101,10 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
         return instance
 
     def to_internal_value(self, data: Any):
-        nickname = data.get('nickname')
         associated_bp = data.get('associated_bp')
         age = data.get('update_field').get('age')
         gender = data.get('update_field').get('gender')
         ret = OrderedDict()
-
-        if not nickname:
-            raise serializers.ValidationError({
-                'nickname': 'This field is required.'
-            })
 
         if gender == "":
             raise serializers.ValidationError({
@@ -129,7 +118,6 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
             ret['associated_bp'] = associated_bp
         if gender is not None:
             ret['gender'] = gender
-        ret['nickname'] = nickname
 
         return ret
 
@@ -144,18 +132,6 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
             "nickname": instance.nickname,
             "created_at": instance.created_at
         }
-
-
-class CustomerNameSerializer(serializers.ModelSerializer):
-    """
-    고객 닉네임만 있는 serializer
-    고객 데이터 조회시 pk 값 대신 닉네임 + BP 로 조회함
-    입력 : R, D
-    """
-
-    class Meta:
-        model = Customer
-        fields = ["nickname", ]
 
 
 class MovieTitleSerializer(serializers.ModelSerializer):
@@ -181,19 +157,13 @@ class BusinessPartnerMovieSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: Any):
         movie = Movie.objects.get(**validated_data.get('movie'))
-        business_partner = BusinessPartner.objects.get(**validated_data.get('business_partner'))
-        business_partner_movie = BusinessPartnerMovie.objects.create(businessPartner=business_partner, movie=movie)
+        business_partner_movie = BusinessPartnerMovie.objects.create(businessPartner=validated_data.get('movie_owner'),
+                                                                     movie=movie)
         return business_partner_movie
 
-    def update(self, instance: Model, validated_data: Any):
-        pass
-
     def to_internal_value(self, data: Any):
-        # Dict of native values <- Dict of primitive datatypes.
         movie = data.get('movie')
-        business_partner = data.get('business_partner')
 
-        # Perform the data validation.
         if not movie["title"]:
             raise serializers.ValidationError({
                 'title': 'This field is required.'
@@ -202,46 +172,19 @@ class BusinessPartnerMovieSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'director': 'This field is required.'
             })
-        if not business_partner:
-            raise serializers.ValidationError({
-                'business_partner': 'This field is required.'
-            })
 
-        # Return the validated values. This will be available as
-        # the `.validated_data` property.
         return {
             'movie': {
                 "title": movie["title"],
                 "director": movie["director"]
-            },
-            'business_partner': business_partner
+            }
         }
-
-    def to_representation(self, instance):
-        # list
-
-        """
-        Object instance -> Dict of primitive datatypes.
-        """
-
-        # We skip `to_representation` for `None` values so that fields do
-        # not have to explicitly deal with that case.
-        #
-        # For related fields with `use_pk_only_optimization` we need to
-        # resolve the pk value.
-        return instance
 
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
         exclude = ('movie',)
-
-
-class MovieSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        exclude = ('movie_owner',)
 
 
 class ActorMovieSerializer(serializers.Serializer):
@@ -266,62 +209,92 @@ class ActorMovieSerializer(serializers.Serializer):
         return actor_movie
 
 
-class CustomActorMovieSerializer(serializers.Serializer):
+class CustomerMovieUpdateSerializer(serializers.ModelSerializer):
+    rate = serializers.FloatField()
 
-    def save(self):
-        movie = self.validated_data['movie']
-        actor = self.validated_data['actor']
-        actor_movie = ActorMovie.objects.create(actor=actor, movie=movie)
-        return actor_movie
+    class Meta:
+        model = CustomerMovie
+        fields = ['rate']
 
-    def to_internal_value(self, data: Any):
-        actor = data.get("actor")
-        movie = data.get("movie")
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
 
-        if not actor:
-            raise serializers.ValidationError({
-                'actor': "This field is required"
-            })
-        if not movie:
-            raise serializers.ValidationError({
-                "movie": "This field is required"
-            })
+    def to_representation(self, instance: Any):
+        ret = OrderedDict()
 
-        return {
-            "actor": actor,
-            "movie": movie
-        }
+        ret['title'] = instance.movie.title
+        ret['director'] = instance.movie.director
+        ret['nickname'] = instance.customer.nickname
+        ret['rate'] = instance.rate
+
+        return ret
 
 
 class CustomerMovieSerializer(serializers.ModelSerializer):
     """
     Customer 와 Movie 의 M2M (through 클래스) serializer
     """
-    customer = CustomerNameSerializer()
     movie = MovieTitleSerializer()
+    nickname = serializers.CharField()
+    rate = serializers.FloatField()
 
     class Meta:
         model = CustomerMovie
-        fields = "__all__"
+        fields = ('movie', 'nickname', 'rate')
 
     def create(self, validated_data: Any):
-        # 고객과 영화 데이터 가져와서
-        # 평점과 함께 CustomerMovie에 저장
-        customer = Customer.objects.get(**validated_data.get('customer'))
-        movie = Movie.objects.get(**validated_data.get('movie'))
+        customer = validated_data.get('customer').get(associated_bp=validated_data.get('associated_bp'))
+        movie = validated_data.get('movie').get()
         rate = validated_data.get('rate')
-        customer_movie = CustomerMovie.objects.create(customer=customer, movie=movie, rate=rate)
+
+        customer_movie = CustomerMovie.objects.create(movie=movie, customer=customer, rate=rate)
         return customer_movie
 
+    def update(self, instance, validated_data):
+        instance.objects.update(rate=validated_data('rate'))
+        instance.save()
+        return instance
 
-class MovieListSerializer(serializers.Serializer):
-    """
-    고객 닉네임과 영화 이름(선택)을 선택받아서
-    추천 리스트 반환해주기 위한 Serializer
-    """
+    def to_internal_value(self, data: Any):
+        movie = data.get('movie')
+        nickname = data.get('nickname')
+        rate = data.get('rate')
+        if not movie["title"]:
+            raise serializers.ValidationError({
+                'title': 'This field is required.'
+            })
+        if not movie["director"]:
+            raise serializers.ValidationError({
+                'director': 'This field is required.'
+            })
+        if not nickname:
+            raise serializers.ValidationError({
+                'nickname': 'This field is required.'
+            })
+        if not rate:
+            raise serializers.ValidationError({
+                'rate': 'This field is required'
+            })
+        movie_instance = Movie.objects.filter(title=movie['title'], director=movie['director'])
+        customer_instance = Customer.objects.filter(nickname=nickname)
+        return {
+            'movie': movie_instance,
+            'customer': customer_instance,
+            'rate': rate
+        }
 
-    customer = CustomerNameSerializer(write_only=True)
-    movie = MovieTitleSerializer(write_only=True)
+    def to_representation(self, instance: Any):
+        ret = OrderedDict()
+
+        ret['title'] = instance.movie.title
+        ret['director'] = instance.movie.director
+        ret['nickname'] = instance.customer.nickname
+        ret['rate'] = instance.rate
+
+        return ret
 
 
 class BusinessPartnerSerializer(serializers.ModelSerializer):
@@ -339,10 +312,19 @@ class BusinessPartnerSerializer(serializers.ModelSerializer):
         return business_partner
 
 
-class CustomMovieListSerializer(serializers.ModelSerializer):
+class CustomerNameSerializer(serializers.ModelSerializer):
+    """
+    고객 닉네임만 있는 serializer
+    고객 데이터 조회시 pk 값 대신 닉네임 + BP 로 조회함
+    입력 : R, D
+    """
+
     class Meta:
-        model = Movie
-        exclude = ['movie_owner', 'created_at', 'movie_pk']
+        model = Customer
+        fields = ["nickname", ]
+
+
+class CustomMovieListSerializer(serializers.Serializer):
 
     def to_internal_value(self, data: Any):
         movie_list = []
@@ -369,3 +351,33 @@ class CustomMovieListSerializer(serializers.ModelSerializer):
                 "description": movie.description,
             }
         return movie_list
+
+#
+#
+# class CustomActorMovieSerializer(serializers.Serializer):
+#
+#     def save(self):
+#         movie = self.validated_data['movie']
+#         actor = self.validated_data['actor']
+#         actor_movie = ActorMovie.objects.create(actor=actor, movie=movie)
+#         return actor_movie
+#
+#     def to_internal_value(self, data: Any):
+#         actor = data.get("actor")
+#         movie = data.get("movie")
+#
+#         if not actor:
+#             raise serializers.ValidationError({
+#                 'actor': "This field is required"
+#             })
+#         if not movie:
+#             raise serializers.ValidationError({
+#                 "movie": "This field is required"
+#             })
+#
+#         return {
+#             "actor": actor,
+#             "movie": movie
+#         }
+#
+#
