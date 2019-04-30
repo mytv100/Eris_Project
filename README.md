@@ -4,8 +4,6 @@ Eris_Project
 에리스와 함께하는 신나는 졸업작품 프로젝트
 -----------------------------------------------
 
-![default](https://user-images.githubusercontent.com/24240623/50373853-00990e80-0628-11e9-810e-957a643cba61.PNG)
-
 # Overview of  this project
 * 이 프로젝트의 목적은 영화 추천 시스템을 Open API로 구현하는 것
 * Restful API를 만들기 위해서 Django REST framework를 사용

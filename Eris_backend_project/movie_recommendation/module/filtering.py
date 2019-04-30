@@ -25,8 +25,8 @@ import operator
 
 def content_based_filtering(customer_pk, movie_pk, business_partner_pk):
     """
-    1. 고객과 가장 유사한 고객 (유사도 평가)
-    2. 그 고객이 평가한 영화 중 점수 높은 것 추천
+    1. 고객이 선택한 영화의 장르가 같은 영화 선택
+    2. 그 중 평점이 높은 영화 
 
     :param customer_pk: 추천을 받을 고객 PK
     :param movie_pk: 고객이 선택한 영화 PK
