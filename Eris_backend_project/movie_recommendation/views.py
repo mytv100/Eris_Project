@@ -83,7 +83,7 @@ class CustomerAPIViewSet(viewsets.GenericViewSet,
         return Response(serializer.data)
 
     def perform_update(self, serializer):
-        serializer.save(associated_bp=self.request.user)
+        serializer.save()
 
     def destroy(self, request, *args, **kwargs):
         """
@@ -100,6 +100,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
                                      mixins.CreateModelMixin,
                                      mixins.DestroyModelMixin,
                                      mixins.RetrieveModelMixin,
+                                     mixins.ListModelMixin,
                                      mixin.DoubleFieldLookupMixin):
     """
     업체가 보유한 영화에 대한 API
@@ -118,7 +119,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
         return super(BusinessPartnerMovieAPIViewSet, self).create(request, args, kwargs)
 
     def perform_create(self, serializer):
-        queryset = self.get_queryset().filter(movie_owner=self.request.user, title=self.request.data['movie']['title'],
+        queryset = self.get_queryset().filter(title=self.request.data['movie']['title'],
                                               director=self.request.data['movie']['director'])
         if queryset.exists():
             raise ValidationError("You have already this movie")
@@ -130,6 +131,17 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
         """
         instance = self.get_object()
         serializer = MovieSerializer(instance)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = MovieSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = MovieSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
@@ -146,8 +158,16 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
         obj = mixin.DoubleFieldLookupMixin.get_object(self)
         return obj
 
+    def get_queryset(self):
+        queryset = self.queryset.filter(movie_owner=self.request.user)
+        return queryset
 
-class CustomerMovieAPIViewSet(viewsets.ModelViewSet,
+
+class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
+                              mixins.CreateModelMixin,
+                              mixins.RetrieveModelMixin,
+                              mixins.DestroyModelMixin,
+                              mixins.ListModelMixin,
                               mixin.TripleFieldLookupMixin):
     """
     고객이 평가한 영화
@@ -155,6 +175,7 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet,
     # 로그인 해야만 접근 가능
     permission_classes = [IsAuthenticated]
     queryset = CustomerMovie.objects.all()
+    # queryset = Movie.objects.all()
     serializer_class = CustomerMovieSerializer
     lookup_fields = ('title', 'director', 'nickname')
 
@@ -171,9 +192,12 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet,
                                               movie__title=self.request.data['movie']['title'],
                                               movie__director=self.request.data['movie']['director'],
                                               customer__nickname=self.request.data['nickname'])
+        # queryset = self.get_queryset().filter(title=self.request.data['movie']['title'], director=self.request.data['movie']['director'],
+        #                                       customermovie__customer__nickname=self.request.data['nickname'])
         if queryset.exists():
             raise ValidationError("Customer have already this movie")
         serializer.save(associated_bp=self.request.user)
+        # serializer.save(associated_bp=self.request.user, nickname=self.request.data['nickname'])
 
     def retrieve(self, request, *args, **kwargs):
         """
@@ -238,6 +262,10 @@ class CustomerMovieAPIViewSet(viewsets.ModelViewSet,
         obj = mixin.TripleFieldLookupMixin.get_object(self)
         return obj
 
+    def get_queryset(self):
+        queryset = self.queryset.filter(customer__associated_bp=self.request.user)
+        return queryset
+
 
 class ActorMovieAPIViewSet(viewsets.ModelViewSet):
     """
@@ -248,20 +276,9 @@ class ActorMovieAPIViewSet(viewsets.ModelViewSet):
     queryset = ActorMovie.objects.all()
     serializer_class = ActorMovieSerializer
 
-    # overriding
-    def create(self, request: Request, *args: Any, **kwargs: Any):
-        # 중복 확인해서 이미 데이터베이스에 있는 데이터면 code 400 반환
-        for query in self.queryset:
-            if request.data['movie']['title'] == query.movie.title and \
-                    request.data['movie']['director'] == query.movie.director:
-                headers = self.get_success_headers(None)
-                return Response(None, status=status.HTTP_400_BAD_REQUEST, headers=headers)
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def get_queryset(self):
+        queryset = self.queryset.filter()
+        return queryset
 
 
 # 회원가입을 처리하는 ViewSet
