@@ -15,7 +15,6 @@ class DoubleFieldLookupMixin(object):
         for field in self.lookup_fields:
             if self.kwargs[field]:  # Ignore empty fields.
                 filter[field] = self.kwargs[field]
-        filter['movie_owner'] = self.request.user
 
         obj = get_object_or_404(queryset, **filter)  # Lookup the object
         self.check_object_permissions(self.request, obj)
@@ -28,21 +27,14 @@ class TripleFieldLookupMixin(object):
     """
 
     def get_object(self):
-        queryset = self.get_queryset()  # Get the base queryset
+        queryset = self.get_queryset().filter(customer__nickname=self.kwargs['nickname'])
         queryset = self.filter_queryset(queryset)  # Apply any filter backends
         filter = {}
         for field in self.lookup_fields:
             if field == 'nickname':
-                customer = Customer.objects.get(nickname=self.kwargs[field], associated_bp=self.request.user)
+                filter["customer__" + field] = self.kwargs[field]
             elif self.kwargs[field]:  # Ignore empty fields.
-                filter[field] = self.kwargs[field]
-        filter['movie_owner'] = self.request.user
-        movie = get_object_or_404(Movie.objects.all(), **filter)
-
-        filter = {}
-        filter['movie'] = movie
-        filter['customer'] = customer
-
+                filter["movie__" + field] = self.kwargs[field]
         obj = get_object_or_404(queryset, **filter)  # Lookup the object
         self.check_object_permissions(self.request, obj)
         return obj
