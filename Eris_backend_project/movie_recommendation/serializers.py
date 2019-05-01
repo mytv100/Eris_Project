@@ -101,7 +101,6 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
         return instance
 
     def to_internal_value(self, data: Any):
-        associated_bp = data.get('associated_bp')
         age = data.get('update_field').get('age')
         gender = data.get('update_field').get('gender')
         ret = OrderedDict()
@@ -114,8 +113,6 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
         if age:
             ret['age'] = age
 
-        if associated_bp:
-            ret['associated_bp'] = associated_bp
         if gender is not None:
             ret['gender'] = gender
 
@@ -130,7 +127,6 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
             "age": instance.age,
             "gender": gender,
             "nickname": instance.nickname,
-            "created_at": instance.created_at
         }
 
 
