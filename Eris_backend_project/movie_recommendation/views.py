@@ -222,7 +222,7 @@ class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
         리스트로 반환해줌
         """
         customer = Customer.objects.filter(associated_bp=request.user, nickname=self.kwargs['nickname']).get()
-        movie = Movie.objects.filter(title=self.kwargs['title'], director=self.kwargs['director']).get()
+        movie = Movie.objects.filter(title=self.kwargs['title'], director__contains=self.kwargs['director']).get()
         result_dict = {}
         movie_list = []
         result_list = movie_filtering(customer.id, movie.movie_pk, request.user.id)
