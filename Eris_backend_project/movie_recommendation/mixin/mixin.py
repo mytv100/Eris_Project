@@ -13,7 +13,9 @@ class DoubleFieldLookupMixin(object):
         queryset = self.filter_queryset(queryset)  # Apply any filter backends
         filter = {}
         for field in self.lookup_fields:
-            if self.kwargs[field]:  # Ignore empty fields.
+            if field == 'director':
+                filter[field + '__contains'] = self.kwargs[field]
+            elif self.kwargs[field]:  # Ignore empty fields.
                 filter[field] = self.kwargs[field]
 
         obj = get_object_or_404(queryset, **filter)  # Lookup the object
@@ -33,6 +35,8 @@ class TripleFieldLookupMixin(object):
         for field in self.lookup_fields:
             if field == 'nickname':
                 filter["customer__" + field] = self.kwargs[field]
+            elif field == 'director':
+                filter["movie__" + field + '__contains'] = self.kwargs[field]
             elif self.kwargs[field]:  # Ignore empty fields.
                 filter["movie__" + field] = self.kwargs[field]
         obj = get_object_or_404(queryset, **filter)  # Lookup the object
