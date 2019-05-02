@@ -34,11 +34,12 @@ def content_based_filtering(customer_pk, movie_pk, business_partner_pk):
     :return: 동일 장르 영화 추천 딕셔너리 리스트 [{"movie":movie_pk},]
     """
     # 현재 선택된 영화
-    genre = Movie.objects.get(movie_pk=movie_pk).genre
+    genres = Movie.objects.get(movie_pk=movie_pk).genre
+    genre = genres.split(",")
 
     # 업체가 소유한 영화 목록 중에 고객이 선택한 영화와 장르가 같은 영화리스트 (평점 높은 순으로 20개)
     movie_list = Movie.objects.filter(
-        movie_owner=business_partner_pk, genre__contains=genre
+        movie_owner=business_partner_pk, genre__contains=genre[0]
     ).values("movie_pk", "genre", "rate").order_by("-rate")[:20]
 
     # 고객이 평가한(이미 관람한) 영화 목록
