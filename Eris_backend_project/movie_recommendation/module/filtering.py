@@ -1,6 +1,7 @@
 from ..models import Customer, Movie, CustomerMovie
 from math import sqrt
 import operator
+from matplotlib import pyplot as plt
 
 """     
     # content_based_filtering
@@ -89,9 +90,27 @@ def collaborative_filtering(customer_pk, movie_pk, business_partner_pk):
     movie_list_a = CustomerMovie.objects.filter(customer=customer_pk).values("movie", "rate")
 
     # 업체에 속한 고객들중 동일 나이대, 동일 성별
-    customers = Customer.objects.filter(associated_bp=business_partner_pk,
+    customers = Customer.objects.filter(
                                         gender=gender, age__lt=((age + 1) * 10),
                                         age__gte=(age * 10)).values("id", "age")
+    """
+        c = Customer.objects.filter(
+                                            gender=gender, age__lt=((age + 1) * 10),
+                                            age__gte=(age * 10))
+
+        for customer in c:
+            plt.scatter(customer.age, customer.gender)
+            plt.annotate(customer.nickname[8:],
+                         xy=(customer.age,customer.gender),
+                         xytext=(5, -5),
+                         textcoords='offset points')
+
+        plt.title("VS")
+        plt.xlabel("Age")
+        plt.ylabel("gender")
+        plt.show()
+    """
+
     rate = {}    # 유사도 계산을 위한 평점 차이 저장 딕셔너리
     customer_dict = {}  # 유사도 저장 딕셔너리
     for j in customers:
@@ -118,7 +137,7 @@ def collaborative_filtering(customer_pk, movie_pk, business_partner_pk):
     # 결과 리스트
     customer_movie_list = []
     # 유사도 값이 작을수록 유사하다, 가장 유사도 값이 작은 4명의 고객이
-    # 시청(평가)한 영화중 평점이 높은 2개 영화를 list 에 넣는다.
+    # 시청(평가)한 영화중 평점이 높은 5개 영화를 list 에 넣는다.
     for c in sorted(customer_dict.items(), key=operator.itemgetter(1), reverse=True)[:4]:
         movies = CustomerMovie.objects.filter(customer=c).values("movie", "rate").order_by("-rate")[:5]
 
