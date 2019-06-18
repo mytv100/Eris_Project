@@ -92,8 +92,10 @@ class CustomerAPIViewSet(viewsets.GenericViewSet,
         return super(CustomerAPIViewSet, self).destroy(request, args, kwargs)
 
     def get_queryset(self):
-        queryset = self.queryset.filter(associated_bp=self.request.user)
+        # queryset = self.queryset.filter(associated_bp=self.request.user)
+        queryset = self.queryset.filter(associated_bp=2)
         return queryset
+
 
 
 class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,

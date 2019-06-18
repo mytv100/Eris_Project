@@ -66,14 +66,14 @@ ROOT_URLCONF = 'configuration.urls'
 
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',)
-}
+#
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework.authentication.SessionAuthentication',
+#     ),
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAuthenticated',)
+# }
 
 # drf-yasg
 SWAGGER_SETTINGS = {

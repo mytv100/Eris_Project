@@ -1,7 +1,6 @@
 from ..models import Customer, Movie, CustomerMovie
 from math import sqrt
 import operator
-from matplotlib import pyplot as plt
 
 """     
     # content_based_filtering
