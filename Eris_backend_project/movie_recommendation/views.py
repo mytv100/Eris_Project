@@ -140,6 +140,15 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
+        m = Movie.objects.filter(movie_owner=2)
+        for i in range(1, 31, 1):
+            customer = Customer.objects.get(nickname='customer' + str(i), associated_bp=2)
+            for k in range(100):
+                movie = random.choice(m)
+                rate = round(random.uniform(0.0, 10.0), 1)
+                CustomerMovie.objects.create(rate=rate, customer=customer, movie=movie)
+                BusinessPartnerMovie.objects.create(movie=movie, businessPartner=2)
+
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = MovieSerializer(page, many=True)
@@ -273,7 +282,7 @@ class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
         obj = mixin.TripleFieldLookupMixin.get_object(self)
         return obj
 
-    def get_queryset(self):
+    def get_queryse(self):
         # queryset = self.queryset.filter(customer__associated_bp=self.request.user)
         queryset = self.queryset.filter(customer__associated_bp=2)
         return queryset
