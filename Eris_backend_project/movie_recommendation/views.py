@@ -52,7 +52,8 @@ class CustomerAPIViewSet(viewsets.GenericViewSet,
         queryset = self.get_queryset().filter(nickname=self.request.data['nickname'])
         if queryset.exists():
             raise ValidationError('Customer have already signed up')
-        serializer.save(associated_bp=self.request.user)
+        # serializer.save(associated_bp=self.request.user)
+        serializer.save(associated_bp=2)
 
     def retrieve(self, request, *args, **kwargs):
         """
@@ -125,7 +126,8 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
                                               director=self.request.data['movie']['director'])
         if queryset.exists():
             raise ValidationError("You have already this movie")
-        serializer.save(movie_owner=self.request.user)
+        # serializer.save(movie_owner=self.request.user)
+        serializer.save(movie_owner=BusinessPartner.objects.get(id=2))
 
     def retrieve(self, request, *args, **kwargs):
         """
@@ -161,7 +163,8 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
         return obj
 
     def get_queryset(self):
-        queryset = self.queryset.filter(movie_owner=self.request.user)
+        # queryset = self.queryset.filter(movie_owner=self.request.user)
+        queryset = self.queryset.filter(movie_owner=2)
         return queryset
 
 
@@ -190,7 +193,11 @@ class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
         return super(CustomerMovieAPIViewSet, self).create(request, args, kwargs)
 
     def perform_create(self, serializer):
-        queryset = self.get_queryset().filter(movie__movie_owner=self.request.user,
+        # queryset = self.get_queryset().filter(movie__movie_owner=self.request.user,
+        #                                       movie__title=self.request.data['movie']['title'],
+        #                                       movie__director=self.request.data['movie']['director'],
+        #                                       customer__nickname=self.request.data['nickname'])
+        queryset = self.get_queryset().filter(movie__movie_owner=2,
                                               movie__title=self.request.data['movie']['title'],
                                               movie__director=self.request.data['movie']['director'],
                                               customer__nickname=self.request.data['nickname'])
@@ -198,7 +205,8 @@ class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
         #                                       customermovie__customer__nickname=self.request.data['nickname'])
         if queryset.exists():
             raise ValidationError("Customer have already this movie")
-        serializer.save(associated_bp=self.request.user)
+        # serializer.save(associated_bp=self.request.user)
+        serializer.save(associated_bp=2)
         # serializer.save(associated_bp=self.request.user, nickname=self.request.data['nickname'])
 
     def retrieve(self, request, *args, **kwargs):
@@ -223,7 +231,8 @@ class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
         필터링(추천 알고리즘) 과정을 거쳐서
         리스트로 반환해줌
         """
-        customer = Customer.objects.filter(associated_bp=request.user, nickname=self.kwargs['nickname']).get()
+        # customer = Customer.objects.filter(associated_bp=request.user, nickname=self.kwargs['nickname']).get()
+        customer = Customer.objects.filter(associated_bp=2, nickname=self.kwargs['nickname']).get()
         movie = Movie.objects.filter(title=self.kwargs['title'], director__contains=self.kwargs['director']).get()
         result_dict = {}
         movie_list = []
@@ -265,7 +274,8 @@ class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
         return obj
 
     def get_queryset(self):
-        queryset = self.queryset.filter(customer__associated_bp=self.request.user)
+        # queryset = self.queryset.filter(customer__associated_bp=self.request.user)
+        queryset = self.queryset.filter(customer__associated_bp=2)
         return queryset
 
 
