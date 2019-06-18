@@ -34,8 +34,8 @@ schema_view = get_schema_view(
     # public = True면 모든 API가 권한에 상관없이 보여짐
     # False 로 설정해서 권한이 없는 API는 볼 수 없게함
     # 영화 & 배우 데이터를 저장하는건 관리자만 가능함
-    public=False,
-
+    # public=False,
+    publc = True,
     permission_classes=(permissions.AllowAny,),
 
 )
