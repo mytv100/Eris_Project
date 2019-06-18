@@ -31,7 +31,7 @@ class CustomerAPIViewSet(viewsets.GenericViewSet,
     Customer CRUD API for BusinessPartner
     """
     queryset = Customer.objects.all()
-    permission_classes = [IsAuthenticated]  # 로그인 해야만 접근 가능
+    # permission_classes = [IsAuthenticated]  # 로그인 해야만 접근 가능
     serializer_class = CustomerSerializer
     lookup_field = ('nickname')  # id 값 대신 nickname 필드를 조회에 사용
 
@@ -107,7 +107,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
     """
     queryset = Movie.objects.all()
     serializer_class = BusinessPartnerMovieSerializer
-    permission_classes = [IsAuthenticated]  # 로그인 해야만 접근 가능
+    # permission_classes = [IsAuthenticated]  # 로그인 해야만 접근 가능
     lookup_fields = ('title', 'director')
 
     def create(self, request, *args, **kwargs):
@@ -173,7 +173,7 @@ class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
     고객이 평가한 영화
     """
     # 로그인 해야만 접근 가능
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = CustomerMovie.objects.all()
     # queryset = Movie.objects.all()
     serializer_class = CustomerMovieSerializer
@@ -272,7 +272,7 @@ class ActorMovieAPIViewSet(viewsets.ModelViewSet):
     영화에 출연한 배우
     """
     # 관리자만 접근할 수 있음
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
     queryset = ActorMovie.objects.all()
     serializer_class = ActorMovieSerializer
 
@@ -285,7 +285,7 @@ class ActorMovieAPIViewSet(viewsets.ModelViewSet):
 class CreateBusinessPartnerAPIViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = BusinessPartner.objects.all()
     serializer_class = BusinessPartnerSerializer
-    permission_classes = (UserPermission,)
+    # permission_classes = (UserPermission,)
 
     def create(self, request: Request, *args: Any, **kwargs: Any):
         """
