@@ -63,8 +63,8 @@ def content_based_filtering(customer_pk, movie_pk, business_partner_pk):
         # 관람하지 않은 영화를 list 에 삽입
         genre_movie_list.append({"movie": j["movie_pk"]})
 
-        # 10개 까지만
-        if len(genre_movie_list) == 10:
+        # 5개 까지만
+        if len(genre_movie_list) == 5:
             break
 
     # 영화 리스트 반환
@@ -89,7 +89,7 @@ def collaborative_filtering(customer_pk, movie_pk, business_partner_pk):
     movie_list_a = CustomerMovie.objects.filter(customer=customer_pk).values("movie", "rate")
 
     # 업체에 속한 고객들중 동일 나이대, 동일 성별
-    customers = Customer.objects.filter(
+    customers = Customer.objects.filter(associated_bp=business_partner_pk,
                                         gender=gender, age__lt=((age + 1) * 10),
                                         age__gte=(age * 10)).values("id", "age")
     """
@@ -136,9 +136,9 @@ def collaborative_filtering(customer_pk, movie_pk, business_partner_pk):
     # 결과 리스트
     customer_movie_list = []
     # 유사도 값이 작을수록 유사하다, 가장 유사도 값이 작은 4명의 고객이
-    # 시청(평가)한 영화중 평점이 높은 5개 영화를 list 에 넣는다.
+    # 시청(평가)한 영화중 평점이 높은 2개 영화를 list 에 넣는다.
     for c in sorted(customer_dict.items(), key=operator.itemgetter(1), reverse=True)[:4]:
-        movies = CustomerMovie.objects.filter(customer=c).values("movie", "rate").order_by("-rate")[:5]
+        movies = CustomerMovie.objects.filter(customer=c).values("movie", "rate").order_by("-rate")[:2]
 
         for m in movies:
 
@@ -163,10 +163,10 @@ def movie_filtering(customer_pk, movie_pk, business_partner_pk):
     :param business_partner_pk: 고객이 속한 업체 PK
     :return: 영화 추천 딕셔너리 리스트 [{"movie":movie_pk},]
     """
-
+    genre_movie_list = content_based_filtering(customer_pk, movie_pk, business_partner_pk)
     customer_movie_list = collaborative_filtering(customer_pk, movie_pk, business_partner_pk)
 
-    genre_movie_list = content_based_filtering(customer_pk, movie_pk, business_partner_pk)
+
 
     # 두 리스트를 합쳐서 중복을 제거한다.
     movies = customer_movie_list + genre_movie_list

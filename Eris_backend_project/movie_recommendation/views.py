@@ -139,7 +139,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-
+        """
         m = Movie.objects.filter(movie_owner=2)
         for i in range(1, 31, 1):
             customer = Customer.objects.get(nickname='customer' + str(i), associated_bp=2)
@@ -148,6 +148,7 @@ class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
                 rate = round(random.uniform(0.0, 10.0), 1)
                 CustomerMovie.objects.create(rate=rate, customer=customer, movie=movie)
                 BusinessPartnerMovie.objects.create(movie=movie, businessPartner=2)
+        """
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -245,7 +246,7 @@ class CustomerMovieAPIViewSet(viewsets.GenericViewSet,
         movie = Movie.objects.filter(title=self.kwargs['title'], director__contains=self.kwargs['director']).get()
         result_dict = {}
         movie_list = []
-        result_list = movie_filtering(customer.id, movie.movie_pk, request.user.id)
+        result_list = movie_filtering(customer.id, movie.movie_pk, 2)
         for i, j in enumerate(result_list):
             result_dict[i] = j
 
