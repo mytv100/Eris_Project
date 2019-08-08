@@ -86,7 +86,7 @@ def collaborative_filtering(customer_pk, movie_pk, business_partner_pk):
     gender = customer.gender
 
     # 고객이 관람한 영화
-    movie_list_a = CustomerMovie.objects.filter(customer=customer_pk).values("movie", "rate")
+    movie_list_a = CustomerMovie.objects.filter(customer=customer_pk).select_related('movie').values("movie", "rate")
 
     # 업체에 속한 고객들중 동일 나이대, 동일 성별
     customers = Customer.objects.filter(associated_bp=business_partner_pk,
@@ -112,14 +112,22 @@ def collaborative_filtering(customer_pk, movie_pk, business_partner_pk):
 
     rate = {}    # 유사도 계산을 위한 평점 차이 저장 딕셔너리
     customer_dict = {}  # 유사도 저장 딕셔너리
-    for j in customers:
-        # 유사도가 작을수록 유사하기 때문에
-        # 같은 영화를 하나도 보지 않았다면 평점의 평균을 10으로해준다.
-        average = 10
-        movie_list_b = CustomerMovie.objects.filter(customer=j["id"]).values("movie", "rate")
+    # for j in customers:
+    # 유사도가 작을수록 유사하기 때문에
+    # 같은 영화를 하나도 보지 않았다면 평점의 평균을 10으로해준다.
+    average = 10
+    movie_list_b = (CustomerMovie.objects
+                    .filter(
+                     customer__associated_bp=business_partner_pk,
+                     customer__gender=gender,
+                     customer__age__lt=((age + 1) * 10),
+                     customer__age__gte=(age * 10))
+                    .select_related('movie').values("movie", "rate"))
 
-        # 다른 고객들의 영화리스트와 현재 고객의 영화리스트를 비교해서 둘다 평가한 영화가 있다면,
-        # rate 딕셔너리에 평점의 차를 넣는다.
+    # 다른 고객들의 영화리스트와 현재 고객의 영화리스트를 비교해서 둘다 평가한 영화가 있다면,
+    # rate 딕셔너리에 평점의 차를 넣는다.
+    for c in customers:
+
         for m in movie_list_a:
             for n in movie_list_b:
                 if m["movie"] == n["movie"] and m["rate"] != 0 and n["rate"] != 0:
@@ -131,27 +139,33 @@ def collaborative_filtering(customer_pk, movie_pk, business_partner_pk):
 
         # 피타고라스 공식과 round 함수를 사용하여 소수 첫번째 자리까지 반올림해서
         # 유사도를 구한 뒤 딕셔너리에 넣음
-        customer_dict[j["id"]] = round(sqrt(pow((customer.age * 10) - j["age"], 2) + pow(average, 2)), 1)
+
+        customer_dict[c['id']] = round(sqrt(pow((age * 10) - c['age'], 2) + pow(average, 2)), 1)
 
     # 결과 리스트
     customer_movie_list = []
     # 유사도 값이 작을수록 유사하다, 가장 유사도 값이 작은 4명의 고객이
     # 시청(평가)한 영화중 평점이 높은 2개 영화를 list 에 넣는다.
-    for c in sorted(customer_dict.items(), key=operator.itemgetter(1), reverse=True)[:4]:
-        movies = CustomerMovie.objects.filter(customer=c).values("movie", "rate").order_by("-rate")[:2]
+    # sorted(customer_dict.items(), key=operator.itemgetter(1), reverse=True)[:4]
 
-        for m in movies:
+    movies = (CustomerMovie.objects
+              .filter(customer__in=sorted(customer_dict.items(), key=operator.itemgetter(1), reverse=True)[:4])
+              .select_related('movie')
+              .values("movie", "rate")
+              .order_by("-rate")[:2])
 
-            # 이미 봤거나
-            for movie in movie_list_a:
-                if movie["movie"] == m["movie"]:
-                    break
+    for m in movies:
 
-            # 현재 선택된 영화인 경우 건너뛰기
-            if m["movie"] == movie_pk:
-                continue
+        # 이미 봤거나
+        for movie in movie_list_a:
+            if movie["movie"] == m["movie"]:
+                break
 
-            customer_movie_list.append(m)
+        # 현재 선택된 영화인 경우 건너뛰기
+        if m["movie"] == movie_pk:
+            continue
+
+        customer_movie_list.append(m)
 
     return customer_movie_list
 
