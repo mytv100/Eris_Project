@@ -64,6 +64,25 @@ class NewMovie(models.Model):
 
     businessPartner: BusinessPartner = models.ManyToManyField(BusinessPartner)
 
+    genre_set = models.ManyToManyField(to='Genre')
+
+class Genre(models.Model):
+    name = models.CharField(max_length=32, null=False)
+    created_at: datetime = CreationDateTimeField()
+g_a=Genre.objects.create(name='기타')
+g_b=Genre.objects.create(name='액션')
+Genre.objects.create(name='모험')
+Genre.objects.create(name='기타')
+"""
+mm : NewMovie =NewMovie.objects.create()
+mm.genre_set.add(g_a)
+mm.genre_set.add(g_b)
+
+NewMovie.genre_set.all() :list<Genre>.
+"""
+
+
+"""
     unknown: bool = models.BooleanField(help_text="기타")
     action: bool = models.BooleanField(help_text="액션")
     adventure: bool = models.BooleanField(help_text="모험")
@@ -83,7 +102,7 @@ class NewMovie(models.Model):
     thriller: bool = models.BooleanField(help_text="스릴러")
     war: bool = models.BooleanField(help_text="전쟁")
     western: bool = models.BooleanField(help_text="서부")
-
+"""
 
 class NewCustomer(models.Model):
     """
@@ -192,7 +211,8 @@ class Movie(models.Model):
     genre: str = models.CharField(
         help_text="영화 장르, ',' 를 기준으로 분류",
         max_length=256,
-        default="genre"
+        default="genre",
+        db_index=True,
     )
 
     description: str = models.CharField(
@@ -225,7 +245,7 @@ class Movie(models.Model):
         help_text="감독명, ',' 를 기준으로 분류",
         max_length=256,
         null=True,
-
+        db_index=True,
     )
 
     movie_owner: BusinessPartner = models.ManyToManyField(
@@ -335,6 +355,9 @@ class Customer(models.Model):
     )
 
     created_at: datetime = CreationDateTimeField()
+
+    class Meta:
+        unique_together = ['nickname', 'associated_bp']
 
 
 class CustomerMovie(models.Model):
