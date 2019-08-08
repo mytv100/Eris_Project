@@ -19,17 +19,17 @@ simple_router = routers.SimpleRouter()
 # movie_title_router.register(r'businessPartnerMovie', views.BusinessPartnerMovieAPIViewSet)
 # 배우 - 영화 M2M
 # 영화에 출연하는 배우들 /actorMovie/     permission = IsAdmin
-#simple_router.register(r'actorMovie', views.ActorMovieAPIViewSet)
+# simple_router.register(r'actorMovie', views.ActorMovieAPIViewSet)
 
 # 고객
 # 업체의 고객 정보 /customer/      permission = IsAuthentication
-#simple_router.register(r'customer', views.CustomerAPIViewSet)
+# simple_router.register(r'customer', views.CustomerAPIViewSet)
 simple_router.register(r'customer', views.NewCustomerAPIViewSet)
 
-simple_router.register(r'movie', views.NewMovieAPIViewSet)
+#simple_router.register(r'movie', views.NewMovieAPIViewSet)
 
 # 업체 회원 가입 /signup/     permission = Anyone allowed without authentication
-simple_router.register(r'signup', views.CreateBusinessPartnerAPIViewSet)
+# simple_router.register(r'signup', views.CreateBusinessPartnerAPIViewSet)
 
 # 데이터 초기화 /init/        permission = IsAdmin
 # simple_router.register(r'init', views.InitViewSet)

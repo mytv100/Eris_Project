@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from movie_recommendation.models import ActorMovie, CustomerMovie, BusinessPartnerMovie, \
-    Customer, BusinessPartner, Movie, Actor
+    Customer, BusinessPartner, Movie, Actor, NewCustomer
 from movie_recommendation.module.filtering import movie_filtering
 from movie_recommendation.permissions import UserPermission
 from movie_recommendation.serializers import BusinessPartnerMovieSerializer, MovieSerializer, CustomerSerializer, \
@@ -20,6 +20,24 @@ from movie_recommendation.serializers import BusinessPartnerMovieSerializer, Mov
 from movie_recommendation.mixin import mixin
 
 import csv
+
+
+class NewCustomerAPIViewSet(viewsets.ModelViewSet):
+    queryset = NewCustomer.objects.all()
+    serializer_class = CustomerSerializer
+
+    def list(self, request: Request, *args: Any, **kwargs: Any):
+        f = open('C:/Users/mytv1/PycharmProjects/untitled/20190801/ml-100k/u.user', 'rb')
+
+        for line in f.readlines():
+            string = line.decode('ISO-8859-1')
+            string_list = string.split("|")
+            print(string_list)
+            NewCustomer.objects.create(id=string_list[0], age=string_list[1], gender=string_list[2],
+                                       occupation=string_list[3])
+        f.close()
+
+        return Response(None)
 
 
 class CustomerAPIViewSet(viewsets.GenericViewSet,
@@ -96,7 +114,6 @@ class CustomerAPIViewSet(viewsets.GenericViewSet,
         # queryset = self.queryset.filter(associated_bp=self.request.user)
         queryset = self.queryset.filter(associated_bp=2)
         return queryset
-
 
 
 class BusinessPartnerMovieAPIViewSet(viewsets.GenericViewSet,
@@ -307,6 +324,7 @@ class ActorMovieAPIViewSet(viewsets.ModelViewSet):
 class CreateBusinessPartnerAPIViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = BusinessPartner.objects.all()
     serializer_class = BusinessPartnerSerializer
+
     # permission_classes = (UserPermission,)
 
     def create(self, request: Request, *args: Any, **kwargs: Any):

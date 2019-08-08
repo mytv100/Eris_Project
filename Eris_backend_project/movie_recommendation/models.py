@@ -28,6 +28,7 @@ class NewMovie(models.Model):
     created_at 이 객체가 생성된 시간
     released_date 개봉 날짜
     movie_owner 이 영화를 가지고 있는 업체 (ManyToManyField 로 through 클래스로 구현)
+    genre_set ManyToManyField(to='Genre')
 
     """
     id: int = models.AutoField(
@@ -66,14 +67,17 @@ class NewMovie(models.Model):
 
     genre_set = models.ManyToManyField(to='Genre')
 
+
 class Genre(models.Model):
     name = models.CharField(max_length=32, null=False)
     created_at: datetime = CreationDateTimeField()
+
+"""
 g_a=Genre.objects.create(name='기타')
 g_b=Genre.objects.create(name='액션')
 Genre.objects.create(name='모험')
 Genre.objects.create(name='기타')
-"""
+
 mm : NewMovie =NewMovie.objects.create()
 mm.genre_set.add(g_a)
 mm.genre_set.add(g_b)
