@@ -1,6 +1,6 @@
 # Create your models here.
 from datetime import datetime
-
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db import models
 from django_extensions.db.fields import CreationDateTimeField
@@ -61,7 +61,7 @@ class NewMovie(models.Model):
     # 생성된 날짜, 시간
     created_at: datetime = CreationDateTimeField()
     # 개봉 날짜
-    released_date: datetime = models.DateField()
+    released_date: datetime = models.DateTimeField(default=timezone.now)
 
     businessPartner: BusinessPartner = models.ManyToManyField(BusinessPartner)
 
