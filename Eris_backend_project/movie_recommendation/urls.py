@@ -6,7 +6,7 @@ from movie_recommendation import views
 simple_router = routers.SimpleRouter()
 
 urlpatterns = [
-    path('', views.InitData),
+    path('', views.initData),
 ]
 
 urlpatterns += simple_router.urls

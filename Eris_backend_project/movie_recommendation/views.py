@@ -1,9 +1,11 @@
+from rest_framework.response import Response
+
 from movie_recommendation.models import NewCustomer, NewMovie, Genre, Ratings, BusinessPartner
 from django.utils import timezone
 from django.db.models import Sum, Count
 
 
-def InitData(request):
+def initData(request):
     businesspartner = BusinessPartner.objects.get(username='user1')
 
     # 장르 데이터
@@ -24,7 +26,7 @@ def InitData(request):
     for line in f.readlines():
         string = line.decode('ISO-8859-1')
         string_list = string.split('|')
-        released_date = timezone.datetime.strptime(string_list[2], '%d-%b-%Y').strftime('%Y-%m-%d')
+        released_date = timezone.datetime.strptime(string_list[2], '%d-%b-%Y')  # .strftime('%Y-%m-%d')
         movie = NewMovie.objects.create(id=string_list[0], title=string_list[1], released_date=released_date)
         movie.businessPartner.add(businesspartner)
 
@@ -56,3 +58,9 @@ def InitData(request):
     f.close()
 
     # 영화 데이터에 평점, 투표 수 추가
+    query_set = Ratings.objects.values('rate', 'movie__id')
+    qs_annotate = query_set.values('movie__id').annotate(count=Count('movie__id'), sum=Sum('rate'))
+    for q in qs_annotate:
+        NewMovie.objects.filter(id=q['movie__id']).update(votes=q['count'], rate=round(q['sum'] / q['count'],1))
+
+    return Response(None)
