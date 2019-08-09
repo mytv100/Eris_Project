@@ -61,7 +61,7 @@ class NewMovie(models.Model):
     # 생성된 날짜, 시간
     created_at: datetime = CreationDateTimeField()
     # 개봉 날짜
-    released_date: datetime = models.DateTimeField()
+    released_date: datetime = models.DateField()
 
     businessPartner: BusinessPartner = models.ManyToManyField(BusinessPartner)
 
@@ -71,6 +71,7 @@ class NewMovie(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=32, null=False)
     created_at: datetime = CreationDateTimeField()
+
 
 """
 g_a=Genre.objects.create(name='기타')
@@ -84,7 +85,6 @@ mm.genre_set.add(g_b)
 
 NewMovie.genre_set.all() :list<Genre>.
 """
-
 
 """
     unknown: bool = models.BooleanField(help_text="기타")
@@ -107,6 +107,7 @@ NewMovie.genre_set.all() :list<Genre>.
     war: bool = models.BooleanField(help_text="전쟁")
     western: bool = models.BooleanField(help_text="서부")
 """
+
 
 class NewCustomer(models.Model):
     """
