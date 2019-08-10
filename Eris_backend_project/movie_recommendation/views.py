@@ -1,8 +1,14 @@
+from typing import Any
+
+from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework import viewsets, mixins
 
 from movie_recommendation.models import NewCustomer, NewMovie, Genre, Ratings, BusinessPartner
 from django.utils import timezone
 from django.db.models import Sum, Count
+
+from movie_recommendation.serializers import MovieSerializer
 
 
 def initData(request):
@@ -31,7 +37,7 @@ def initData(request):
         movie.businessPartner.add(businesspartner)
 
         for i in range(5, 24):
-            if string_list[5]:
+            if string_list[i]:
                 genre = Genre.objects.get(name=genre_list[i - 5])
                 movie.genre_set.add(genre)
     f.close()
@@ -61,6 +67,26 @@ def initData(request):
     query_set = Ratings.objects.values('rate', 'movie__id')
     qs_annotate = query_set.values('movie__id').annotate(count=Count('movie__id'), sum=Sum('rate'))
     for q in qs_annotate:
-        NewMovie.objects.filter(id=q['movie__id']).update(votes=q['count'], rate=round(q['sum'] / q['count'],1))
+        NewMovie.objects.filter(id=q['movie__id']).update(votes=q['count'], rate=round(q['sum'] / q['count'], 1))
 
     return Response(None)
+
+
+class MovieAPIViewSet(viewsets.ModelViewSet):
+    queryset = NewMovie.objects.all()
+    serializer_class = MovieSerializer
+
+    def create(self, request: Request, *args: Any, **kwargs: Any):
+        return super(MovieAPIViewSet, self).create(request, args, kwargs)
+
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any):
+        return super(MovieAPIViewSet, self).retrieve(request, args, kwargs)
+
+    def list(self, request: Request, *args: Any, **kwargs: Any):
+        return super(MovieAPIViewSet, self).list(request, args, kwargs)
+
+    def update(self, request: Request, *args: Any, **kwargs: Any):
+        return super(MovieAPIViewSet, self).update(request, args, kwargs)
+
+    def destroy(self, request: Request, *args: Any, **kwargs: Any):
+        return super(MovieAPIViewSet, self).destroy(request, args, kwargs)
