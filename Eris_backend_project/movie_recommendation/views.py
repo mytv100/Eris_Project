@@ -1,16 +1,20 @@
 from typing import Any
 
+from rest_framework.decorators import api_view, schema, action
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
+from rest_framework.schemas import AutoSchema
 
 from movie_recommendation.models import NewCustomer, NewMovie, Genre, Ratings, BusinessPartner
 from django.utils import timezone
 from django.db.models import Sum, Count
 
-from movie_recommendation.serializers import MovieSerializer
+from movie_recommendation.module.filtering import movie_filtering
+from movie_recommendation.serializers import MovieSerializer, CustomerSerializer
 
 
+@api_view()
 def initData(request):
     businesspartner = BusinessPartner.objects.get(username='user1')
 
@@ -88,5 +92,47 @@ class MovieAPIViewSet(viewsets.ModelViewSet):
     def update(self, request: Request, *args: Any, **kwargs: Any):
         return super(MovieAPIViewSet, self).update(request, args, kwargs)
 
+    def partial_update(self, request: Request, *args: Any, **kwargs: Any):
+        return super(MovieAPIViewSet, self).partial_update(request, args, kwargs)
+
     def destroy(self, request: Request, *args: Any, **kwargs: Any):
         return super(MovieAPIViewSet, self).destroy(request, args, kwargs)
+
+
+class CustomerAPIViewSet(viewsets.ModelViewSet):
+    queryset = NewCustomer.objects.all()
+    serializer_class = CustomerSerializer
+
+    def create(self, request: Request, *args: Any, **kwargs: Any):
+        return super(CustomerAPIViewSet, self).create(request, args, kwargs)
+
+    def retrieve(self, request: Request, *args: Any, **kwargs: Any):
+        return super(CustomerAPIViewSet, self).retrieve(request, args, kwargs)
+
+    def list(self, request: Request, *args: Any, **kwargs: Any):
+        return super(CustomerAPIViewSet, self).list(request, args, kwargs)
+
+    def update(self, request: Request, *args: Any, **kwargs: Any):
+        return super(CustomerAPIViewSet, self).update(request, args, kwargs)
+
+    def partial_update(self, request: Request, *args: Any, **kwargs: Any):
+        return super(CustomerAPIViewSet, self).partial_update(request, args, kwargs)
+
+    def destroy(self, request: Request, *args: Any, **kwargs: Any):
+        return super(CustomerAPIViewSet, self).destroy(request, args, kwargs)
+
+
+@api_view(['GET'])
+def MovieRecommend(request, **kwargs):
+    result_dict = {}
+    movie_list = []
+
+    result_list = movie_filtering(kwargs['customer_id'], kwargs['movie_id'], 2)
+    for i, j in enumerate(result_list):
+        result_dict[i] = j
+
+    movie_list.append(result_dict)
+
+    serializer = MovieSerializer(data=movie_list, many=True)
+    serializer.is_valid(raise_exception=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

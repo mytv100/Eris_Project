@@ -3,7 +3,7 @@ from typing import Any
 from django.db.models import Model
 from rest_framework import serializers
 
-from movie_recommendation.models import NewMovie, Genre
+from movie_recommendation.models import NewMovie, Genre, NewCustomer, BusinessPartner
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -68,4 +68,44 @@ class MovieSerializer(serializers.ModelSerializer):
             'votes': instance.votes,
             'released_date': instance.released_date,
             'genre_set': genre_list,
+        }
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewCustomer
+        fields = ('gender', 'age', 'occupation')
+
+        def create(self, validated_data: Any):
+            businessPartner = BusinessPartner.objects.get(name='user1')
+            customer = NewCustomer.objects. \
+                create(gender=validated_data.get('gender'),
+                       age=validated_data.get('age'),
+                       occupation=validated_data.get('occupation'),
+                       businessPartner=businessPartner
+                       )
+            return customer
+
+        def update(self, instance: Model, validated_data: Any):
+            NewCustomer.objects.filter(id=instance.id). \
+                update(gender=validated_data.get('gender'),
+                       age=validated_data.get('age'),
+                       occupation=validated_data.get('occupation'),
+                       )
+
+            return instance
+
+    def to_internal_value(self, data: Any):
+        return {
+            'gender': data.get('gender'),
+            'age': data.get('age'),
+            'occupation': data.get('occupation'),
+        }
+
+    def to_representation(self, instance: Any):
+        return {
+            'id': instance.id,
+            'age': instance.age,
+            'gender': instance.gender,
+            'occupation': instance.occupation,
         }
