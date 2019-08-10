@@ -109,3 +109,4 @@ class CustomerSerializer(serializers.ModelSerializer):
             'gender': instance.gender,
             'occupation': instance.occupation,
         }
+

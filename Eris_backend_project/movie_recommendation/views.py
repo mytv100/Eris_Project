@@ -133,6 +133,4 @@ def MovieRecommend(request, **kwargs):
 
     movie_list.append(result_dict)
 
-    serializer = MovieSerializer(data=movie_list, many=True)
-    serializer.is_valid(raise_exception=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(movie_list, status=status.HTTP_200_OK)
