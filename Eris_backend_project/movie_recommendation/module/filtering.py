@@ -5,6 +5,8 @@ from django.db.models import Q
 from ..models import NewCustomer, NewMovie, Ratings
 from math import sqrt
 import operator
+import os
+from surprise import dump
 
 """     
     # content_based_filtering
@@ -38,7 +40,7 @@ def content_based_filtering(customer_pk, movie_pk, business_partner_pk):
     :return: 동일 장르 영화 추천 딕셔너리 리스트 [{"movie":movie_pk},]
     """
     # 현재 선택된 영화
-    genre_list = NewMovie.objects.get(id=movie_pk).genre_set.all().values_list('name',flat=True)
+    genre_list = NewMovie.objects.get(id=movie_pk).genre_set.all().values_list('name', flat=True)
 
     # 업체가 소유한 영화 목록 중에 고객이 선택한 영화와 장르가 같은 영화리스트 (평점 높은 순으로 20개)
     """
@@ -193,4 +195,8 @@ def movie_filtering(customer_pk, movie_pk, business_partner_pk):
     # 두 리스트를 합쳐서 중복을 제거한다.
     movies = customer_movie_list + genre_movie_list
     movie_list = list({movie['movie_id']: movie for movie in movies}.values())
+
+    # file_name = os.path.expanduser('dump_file')
+    # _, loaded_algo = dump.load(file_name)
+
     return movie_list
