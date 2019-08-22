@@ -126,7 +126,7 @@ class CustomerAPIViewSet(viewsets.ModelViewSet):
 def MovieRecommend(request, **kwargs):
     result_dict = {}
     movie_list = []
-
+    a = 0
     result_list = movie_filtering(kwargs['customer_id'], kwargs['movie_id'], 2)
     for i, j in enumerate(result_list):
         result_dict[i] = j
