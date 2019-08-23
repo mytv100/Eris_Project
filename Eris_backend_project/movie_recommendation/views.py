@@ -80,46 +80,46 @@ class MovieAPIViewSet(viewsets.ModelViewSet):
     queryset = NewMovie.objects.all()
     serializer_class = MovieSerializer
 
-    def create(self, request: Request, *args: Any, **kwargs: Any):
-        return super(MovieAPIViewSet, self).create(request, args, kwargs)
-
-    def retrieve(self, request: Request, *args: Any, **kwargs: Any):
-        return super(MovieAPIViewSet, self).retrieve(request, args, kwargs)
-
-    def list(self, request: Request, *args: Any, **kwargs: Any):
-        return super(MovieAPIViewSet, self).list(request, args, kwargs)
-
-    def update(self, request: Request, *args: Any, **kwargs: Any):
-        return super(MovieAPIViewSet, self).update(request, args, kwargs)
-
-    def partial_update(self, request: Request, *args: Any, **kwargs: Any):
-        return super(MovieAPIViewSet, self).partial_update(request, args, kwargs)
-
-    def destroy(self, request: Request, *args: Any, **kwargs: Any):
-        return super(MovieAPIViewSet, self).destroy(request, args, kwargs)
+    # def create(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(MovieAPIViewSet, self).create(request, args, kwargs)
+    #
+    # def retrieve(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(MovieAPIViewSet, self).retrieve(request, args, kwargs)
+    #
+    # def list(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(MovieAPIViewSet, self).list(request, args, kwargs)
+    #
+    # def update(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(MovieAPIViewSet, self).update(request, args, kwargs)
+    #
+    # def partial_update(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(MovieAPIViewSet, self).partial_update(request, args, kwargs)
+    #
+    # def destroy(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(MovieAPIViewSet, self).destroy(request, args, kwargs)
 
 
 class CustomerAPIViewSet(viewsets.ModelViewSet):
     queryset = NewCustomer.objects.all()
     serializer_class = CustomerSerializer
 
-    def create(self, request: Request, *args: Any, **kwargs: Any):
-        return super(CustomerAPIViewSet, self).create(request, args, kwargs)
-
-    def retrieve(self, request: Request, *args: Any, **kwargs: Any):
-        return super(CustomerAPIViewSet, self).retrieve(request, args, kwargs)
-
-    def list(self, request: Request, *args: Any, **kwargs: Any):
-        return super(CustomerAPIViewSet, self).list(request, args, kwargs)
-
-    def update(self, request: Request, *args: Any, **kwargs: Any):
-        return super(CustomerAPIViewSet, self).update(request, args, kwargs)
-
-    def partial_update(self, request: Request, *args: Any, **kwargs: Any):
-        return super(CustomerAPIViewSet, self).partial_update(request, args, kwargs)
-
-    def destroy(self, request: Request, *args: Any, **kwargs: Any):
-        return super(CustomerAPIViewSet, self).destroy(request, args, kwargs)
+    # def create(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(CustomerAPIViewSet, self).create(request, args, kwargs)
+    #
+    # def retrieve(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(CustomerAPIViewSet, self).retrieve(request, args, kwargs)
+    #
+    # def list(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(CustomerAPIViewSet, self).list(request, args, kwargs)
+    #
+    # def update(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(CustomerAPIViewSet, self).update(request, args, kwargs)
+    #
+    # def partial_update(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(CustomerAPIViewSet, self).partial_update(request, args, kwargs)
+    #
+    # def destroy(self, request: Request, *args: Any, **kwargs: Any):
+    #     return super(CustomerAPIViewSet, self).destroy(request, args, kwargs)
 
 
 @api_view(['GET'])
