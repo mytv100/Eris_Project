@@ -5,7 +5,7 @@ click==6.7
 confusable-homoglyphs==3.2.0
 coreapi==2.3.3
 coreschema==0.0.4
-Django==2.1.7
+Django==2.2.13
 django-extensions==2.1.6
 django-six==1.0.4
 djangorestframework==3.9.2
