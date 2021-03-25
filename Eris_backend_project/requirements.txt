@@ -20,7 +20,7 @@ MarkupSafe==1.1.0
 mysqlclient==1.4.2.post1
 pyrsistent==0.14.11
 pytz==2018.7
-PyYAML==4.2b1
+PyYAML==5.4
 requests==2.20.1
 ruamel.yaml==0.15.89
 six==1.12.0
